@@ -1,0 +1,24 @@
+* {
+   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  background-color: #808080;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+#root {
+  flex: 1;
+  display: flex;
+  align-items: center; /* если хочешь вертикальное выравнивание */
+  justify-content: center;
+}
+

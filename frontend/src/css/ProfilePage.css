@@ -1,0 +1,101 @@
+.profile {
+  width: 800px;
+  height: 600px;
+  background: #292929; /* мягкий фон */
+  border-radius: 10px;
+  padding: 30px 40px;
+  color: #ffa31a;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3); /* тень как в card-container-splited */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.profile::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: #808080;
+  z-index: 0;
+  opacity: 0.2;
+}
+
+.profile h3 {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  align-self: flex-start;
+  z-index: 2;
+}
+
+.profile-content {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 40px;
+  margin-bottom: 40px;
+  z-index: 2;
+}
+
+/* Левая часть с текстовой информацией */
+.profile-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.profile-info-field {
+  background: rgba(255, 163, 26, 0.05); /* мягкий акцент */
+  padding: 15px 20px;
+  border-radius: 8px;
+  color: #fafafa;
+  font-size: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* менее насыщенная тень */
+}
+
+/* Правая часть — аватар */
+.profile-avatar {
+  flex-shrink: 0;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #ffa31a;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* мягкая тень */
+}
+
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Кнопка снизу */
+.profile-button {
+  background-color: #ffa31a;
+  border: none;
+  border-radius: 8px;
+  padding: 15px 50px;
+  font-size: 22px;
+  font-weight: 700;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 0 20px rgba(255, 163, 26, 0.5); /* тень от второго блока */
+  transition: background-color 0.3s, transform 0.2s;
+  z-index: 2;
+  margin-top: 100px;
+}
+
+.profile-button:hover {
+  background-color: #e59400;
+  transform: translateY(3px);
+  box-shadow: 0 0 30px rgba(255, 180, 40, 0.8);
+}

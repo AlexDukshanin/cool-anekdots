@@ -1,0 +1,92 @@
+header {
+    display: flex;
+    width: 100%;
+    background-color: #1b1b1b;
+    color: #ffa31a;
+    padding: 10px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+}
+
+header p {
+    font-size: 15px;
+    z-index: 10;
+}
+
+header h1,
+header p {
+    margin-left: 20px;
+    z-index: 10;
+}
+
+.links {
+    display: flex;
+    justify-content: center;
+    margin-left: auto;
+    padding: 20px;
+    gap: 20px;
+    z-index: 10;
+}
+
+.link {
+    text-decoration: none;
+    color: rgb(211, 129, 23);
+    font-size: 20px;
+    transition: all 0.5s ease;
+    z-index: 10;
+}
+
+.link:hover, .button-link:hover {
+    color: rgb(219, 155, 70);
+    transform: translateY(2px);
+    z-index: 10;
+}
+
+.button-link {
+  color: rgb(211, 129, 23); /* Цвет как у обычной ссылки */
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s;
+  font-size: 20px;
+  transition: all 0.5s ease;
+  z-index: 10;
+}
+
+
+.menu-button {
+    z-index: 100;
+    background: none;
+    color: #ffa31a;
+    font-size: 20px;border: none;
+    padding: 0;
+    font: inherit;
+}
+
+.hidden-menu{
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width:15%;
+    background-color: #1b1b1b;
+    z-index: 5;
+    transform: translateX(100%); 
+    transition: transform 0.3s ease;
+}
+
+.menu-links{
+    display: flex;
+    flex-direction: column;
+    margin: 100px 20px;
+    gap: 10px;
+}
+
+.hidden-menu.open {
+    transform: translateX(0)
+}
