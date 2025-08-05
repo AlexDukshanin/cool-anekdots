@@ -47,6 +47,7 @@ function Header() {
                         <Link onClick={showMenu} className="link menu-link" to='/profile'> Мой профиль</Link>
                         <Link onClick={showMenu} className="link menu-link">Добавить анекдот</Link>
                         <Link onClick={showMenu} className="link menu-link">Контакты </Link>
+                        <Link noClick={showMenu} className="link menu-link">Ссылка</Link>
                     </div>
                 </div>
         </header>
