@@ -11,6 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
+from rest_framework.generics import RetrieveUpdateAPIView
 
 class UsersViewsSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
@@ -50,7 +51,7 @@ class LoginView(generics.GenericAPIView):
             "access": str(refresh.access_token),
         })
     
-class UserProfileView(generics.RetrieveAPIView):
+class UserProfileView(RetrieveUpdateAPIView):
     serializer_class = UsersSerializer
     permission_classes = [IsAuthenticated]
 

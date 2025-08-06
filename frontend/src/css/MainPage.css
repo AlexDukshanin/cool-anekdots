@@ -74,10 +74,18 @@
 
 .random_anecdot_rating {
   max-height: 600px;
-  margin: 20px 0px;
+  margin: 10px 0px;
   font-size: 20px;
   font-weight: 750;
   color: #ffa31a;
+}
+
+.random_anecdot_buttons_group {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 10px 0px;
+  
 }
 
 .random_anecdot_button {

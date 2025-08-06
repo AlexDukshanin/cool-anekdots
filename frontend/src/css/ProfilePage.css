@@ -43,12 +43,24 @@
   z-index: 2;
 }
 
+/* контейнер с формой */
+.profile-form-container {
+  display: flex;
+  flex-direction: column;
+
+  font-size: 20px;
+  width: 100%;
+  max-width: 500px;
+  z-index: 5;
+}
+
 /* Левая часть с текстовой информацией */
 .profile-info {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 20px;
+  z-index: 5;
 }
 
 .profile-info-field {
@@ -78,6 +90,11 @@
   display: block;
 }
 
+.profile-button-container {
+  display: flex;
+  gap: 20px;
+}
+
 /* Кнопка снизу */
 .profile-button {
   background-color: #ffa31a;
@@ -91,7 +108,7 @@
   box-shadow: 0 0 20px rgba(255, 163, 26, 0.5); /* тень от второго блока */
   transition: background-color 0.3s, transform 0.2s;
   z-index: 2;
-  margin-top: 100px;
+  margin-top: 20px;
 }
 
 .profile-button:hover {
@@ -99,3 +116,5 @@
   transform: translateY(3px);
   box-shadow: 0 0 30px rgba(255, 180, 40, 0.8);
 }
+
+
