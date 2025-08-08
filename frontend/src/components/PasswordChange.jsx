@@ -1,7 +1,7 @@
-import React,{ useState } from "react";
+import React, { useState, useEffect } from "react";
 import useAuthFetch from "../hooks/token";
 
-const PasswordChange = () => {
+const PasswordChange = ({ onCancel }) => {
     const AuthFetch = useAuthFetch()
 
     const [passwordData, setPasswordData] = useState({
@@ -13,6 +13,20 @@ const PasswordChange = () => {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (error) {
+        const timer = setTimeout(() => setError(null), 5000);
+        return () => clearTimeout(timer);
+        }
+    }, [error]);
+
+    useEffect(() => {
+        if (success) {
+        const timer = setTimeout(() => setSuccess(null), 5000);
+        return () => clearTimeout(timer);
+        }
+    }, [success]);
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -28,7 +42,7 @@ const PasswordChange = () => {
         try {
             const response = await AuthFetch('http://127.0.0.1:8000/api/auth/change-password/', {
                 method: 'POST',
-                headers: {'content-type': 'application/json'},
+                // headers: {'content-type': 'application/json'},
                 body: JSON.stringify(passwordData)
             })
             setLoading(false)
@@ -79,11 +93,21 @@ const PasswordChange = () => {
                 value={passwordData.new_password2} 
                 onChange={handleChange}/>
             </div>
-            {error && <p>{error}</p>}
-            {success && <p>{success}</p>}
-            <button type="submit" className="profile-button" disabled={loading}>
-                {loading ? 'Сохраняем' : 'Сменить пароль'}
-            </button>
+            {error && <p className="profile-error-message">{error}</p>}
+            {success && <p className="profile-success-message">{success}</p>}
+            <div className="profile-button-container">
+                <button type="submit" className="profile-button" disabled={loading}>
+                    {loading ? 'Сохраняем' : 'Сменить пароль'}
+                </button>
+                {/* Кнопка Назад вызывает onCancel */}
+                <button
+                    type="button"
+                    onClick={onCancel}
+                    className="profile-button"
+                    >
+                    Назад
+                </button>
+            </div>
         </form>
     )
 

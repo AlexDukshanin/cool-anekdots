@@ -14,6 +14,7 @@ const ProfilePage = () => {
     const { isAuth } = useAuth();
     const navigate = useNavigate();
     const [isChangingPassword, setIsChangingPassword] = useState(false);
+    const [avatarFile, setAvatarFile] = useState(null);
     
     useEffect(() => {
         if (!isAuth) {
@@ -46,19 +47,30 @@ const ProfilePage = () => {
     } 
     //сохранение изменений профиля
     const handleInputChange = async () => {
+        const formData = new FormData();
+        formData.append('name', editedProfile.name)
+        formData.append('email', editedProfile.email)
+        formData.append('age', editedProfile.age)
+
+        if (avatarFile) {
+            formData.append('avatar', avatarFile)
+        }
+
         try {
             const response = await authFetch('http://127.0.0.1:8000/api/auth/profile/', {
                 method: 'PUT',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(editedProfile)
+                body: formData
                 })
                 if (response.ok) {
                     const updateProfile = await response.json()
                     setProfile(updateProfile)
                     setIsEditing(false)
                     setError(null)
+                    setAvatarFile(null);
                 } else {
+                    const errText = await response.text()
                     setError("Не удалось сохранить изменения")
+                    setAvatarFile(null);
                 }
             } catch (el){
                 setError("Ошибка, связь с сервером потеряна")
@@ -71,8 +83,7 @@ const ProfilePage = () => {
                     isChangingPassword? (
                         <div className="profile">
                             <h3>Смена пароля</h3>
-                            <PasswordChange />
-                            <button onClick={() => setIsChangingPassword(false)} className='profile-button'>Назад</button>
+                            <PasswordChange onCancel={() => setIsChangingPassword(false)} />
                         </div>
                     ) : isEditing && editedProfile? (
                         <div className='profile'>
@@ -106,13 +117,14 @@ const ProfilePage = () => {
                                         <source srcSet={profile.avatar} media="(min-width: 1000px)" />
                                         <img src={profile.avatar} alt="Фото профиля" />
                                     </picture>
-                                    <label className="upload-button">
+                                    <label htmlFor="avatar-upload-2" className="avatar-overlay-button">
                                         Изменить фото
-                                        <input 
-                                        type="file" 
-                                        accept="image/*" 
-                                        onChange={handleAvatarChange} 
-                                        style={{ display: 'none' }}
+                                        <input
+                                        id="avatar-upload-2"
+                                        className="file-input-hidden"
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => setAvatarFile(e.target.files[0])}
                                         />
                                     </label>
                                 </div>

@@ -1,17 +1,22 @@
-from django.shortcuts import render
 from rest_framework import viewsets, generics, status
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny
-from users.forms import PasswordChangeForm
 from .models import CustomUser
 from rest_framework.permissions import IsAuthenticated
 from .serializers import UsersSerializer, RegisterSerializer, loginSerializer
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from rest_framework.generics import RetrieveUpdateAPIView
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth.password_validation import validate_password
+from django.contrib.auth import update_session_auth_hash
+from rest_framework import status
+
+
 
 class UsersViewsSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
@@ -54,20 +59,36 @@ class LoginView(generics.GenericAPIView):
 class UserProfileView(RetrieveUpdateAPIView):
     serializer_class = UsersSerializer
     permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
 
     def get_object(self):
         return self.request.user
     
-@login_required
-def change_password_views(request):
-    if request.method == "POST":
-        form = PasswordChangeForm(user=request.user, data=request.POST)
-        if form.is_valid():
-            form.save()
-            update_session_auth_hash(request, request.user)
-            messages.success(request, "Пароль успешно изменен")
-            return redirect('profile')  # проверь, чтобы 'profile' был в urls
-    else:
-        form = PasswordChangeForm(user=request.user)
 
-    return render(request, 'users/change_password.html', {'form': form})
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]  # Требуется авторизация
+
+    def post(self, request):
+        user = request.user
+        data = request.data
+
+        old_password = data.get("old_password")
+        new_password = data.get("new_password")
+        new_password2 = data.get("new_password2")
+
+        if not user.check_password(old_password):
+            return Response({"old_password": ["Старый пароль неверный."]}, status=status.HTTP_400_BAD_REQUEST)
+
+        if new_password != new_password2:
+            return Response({"new_password2": ["Пароли не совпадают."]}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            validate_password(new_password, user=user)
+        except Exception as e:
+            return Response({"new_password": e.messages}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.set_password(new_password)
+        user.save()
+        update_session_auth_hash(request, user)
+
+        return Response({"detail": "Пароль успешно изменён."}, status=status.HTTP_200_OK)

@@ -24,14 +24,19 @@ const useAuthFetch = () => {
   const authFetch = async (url, options = {}) => {
     let token = localStorage.getItem('access');
 
-    const addAuthHeader = (opts) => ({
-      ...opts,
-      headers: {
-        ...(opts.headers || {}),
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
+    const addAuthHeader = (opts) => {
+      
+      const isFormData = opts.body instanceof FormData;
+
+      return {
+        ...opts,
+        headers: {
+          ...(opts.headers || {}),
+          Authorization: `Bearer ${token}`,
+          ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
+        },
+      };
+    };
 
     let response = await fetch(url, addAuthHeader(options));
 
