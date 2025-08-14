@@ -34,6 +34,7 @@
   background: #808080;
   z-index: 0;
   opacity: 0.2;
+  pointer-events: none;
 }
 
 .random_anecdot_card {
@@ -44,10 +45,10 @@
 }
 
 
-.random_anecdot_name {
+.random_anecdot_name {  
   max-height: 600px;
-  margin-bottom: 20px;
-  font-size: 30px;
+  margin-bottom: 15px;
+  font-size: 36px;
   font-weight: 750;
   color: #ffa31a;
 }
@@ -100,6 +101,7 @@
   transition: background-color 0.3s, transform 0.2s;
   box-shadow: 0 0 20px rgba(255, 163, 26, 0.3);
   align-self: center;
+  z-index: 2;
 }
 
 .random_anecdot_button:hover {

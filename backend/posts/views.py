@@ -12,6 +12,10 @@ class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
     permission_classes = [AllowAny]
 
+    def perform_create(self, serializer):
+        # Тут явно указываем автора из request.user
+        serializer.save(author=self.request.user)
+
     @action(detail=False, methods=['get'])
     def random(self, request):
         count = Post.objects.count()

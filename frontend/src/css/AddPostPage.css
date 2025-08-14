@@ -1,0 +1,252 @@
+.add-post {
+  width: 800px;
+  height: 600px;
+  background: #292929; /* мягкий фон */
+  border-radius: 10px;
+  padding: 30px 40px;
+  color: #ffa31a;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3); /* тень как в card-container-splited */
+  display: flex;
+  border: 1px solid black;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: relative;
+  box-sizing: border-box;
+  z-index: 1;
+}
+
+.add-post::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: #808080;
+  z-index: 0;
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+.add-post h3 {
+  font-size: 38px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  align-self: flex-start;
+
+}
+
+.add-post-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-size: 20px;
+  width: 100%;
+  max-width: 500px;
+}
+
+/* Подписи к полям */
+.add-post-content > form > label {
+  margin: 10px 0 5px 5px;
+  font-size: 22px;
+  font-weight: 600;
+  margin: 10px;
+  color: #ffa31a;
+}
+
+.add-post-content > form > label:hover {
+    cursor: pointer;
+}
+
+/* Поля ввода названия */
+.add-post-input-field {
+  width: 100%;
+  height: 45px;
+  background: rgba(255, 163, 26, 0.05);
+  border: 1px solid black;
+  border-radius: 8px;
+  padding: 0 15px;
+  font-size: 18px;
+  color: #fafafa;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  transition: outline 0.2s ease-in-out;
+}
+
+/* Поля ввода текста */
+.add-post-text-field {
+  width: 100%;
+  height: 155px;
+  background: rgba(255, 163, 26, 0.05);
+  border: 1px solid black;
+  border-radius: 8px;
+  padding: 10 15px;
+  font-size: 18px;
+  color: #fafafa;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  transition: outline 0.2s ease-in-out;
+  text-align: left;
+  vertical-align: top;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-x: hidden;
+  overflow-y: auto;
+  resize: none;
+
+}
+
+.add-post-rules-container {
+  max-height: 500px;   /* фиксируем максимум высоты блока */
+  overflow-y: auto;    /* показываем вертикальный скролл, если контента много */
+  border: 1px solid #000000; /* для наглядности */
+  border-radius: 10px;
+  padding: 20px;
+  width: 700px;        /* по желанию фиксируем ширину */
+  box-sizing: border-box; /* чтобы padding учитывался */
+  
+}
+
+/* пиздатый чекбокс который я скачал */
+.checkbox-wrapper-62 input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 40px; /* лучше под размер SVG */
+  height: 40px;
+  margin: 0;
+  padding: 0;
+  z-index: 2;
+  cursor: pointer;
+}
+
+
+.checkbox-wrapper-62 *,
+.checkbox-wrapper-62 ::after,
+.checkbox-wrapper-62 ::before {
+  box-sizing: border-box;
+}
+
+.checkbox-wrapper-62 {
+  position: relative;
+  display: block;
+  overflow: hidden;
+}
+.checkbox-wrapper-62 .check {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  opacity: 0;
+}
+
+.checkbox-wrapper-62 label svg {
+  width: 30px;
+  height: 30px;
+  vertical-align: middle;
+}
+.checkbox-wrapper-62 .path1 {
+  stroke-dasharray: 400;
+  stroke-dashoffset: 400;
+  transition: .5s all;
+}
+
+
+.checkbox-wrapper-62 .check:checked + label svg g path {
+  stroke-dashoffset: 0;
+}
+/* Кнопки на странице которые отображаются для неавторизованного пользователя  */
+.add-post-button-container {
+  display: flex;
+  margin-top: 200px;
+  justify-content: center;
+  height: auto;
+  display: flex;
+  text-align: center;
+}
+
+.add-post > h4 {
+  font-size: 20px;
+  margin-top: 100px;
+  color: #fafafa;
+}
+
+.add-post-button-container-button { 
+  background-color: #ffa31a;
+  border: none;
+  width: 250px;
+  margin: 20px 30px;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 0 20px rgba(255, 163, 26, 0.3);
+  align-self: center;
+  z-index: 2;
+}
+
+.add-post-button-container-button > a {
+  text-decoration: none;
+  color: #fafafa;
+}
+
+
+.add-post-button {
+  background-color: #ffa31a;
+  border: none;
+  width: 300px;
+  margin: 20px 100px;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 22px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 0 20px rgba(255, 163, 26, 0.3);
+  align-self: center;
+  z-index: 2;
+}
+
+.add-post-button:hover,
+.add-post-button-container-button:hover {
+  background-color: #e69300;
+  transform: translateY(-2px);
+}
+
+.add-post-error-message,
+.add-post-success-message {
+  position: relative;
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
+.add-post-error-message{
+  color: red;
+  background-color: rgb(247, 109, 109);
+  border: 1px solid red;
+}
+
+.add-post-success-message {
+  color: rgb(0, 255, 21);
+  background-color: rgb(151, 255, 156);
+  border: 1px solid rgb(0, 255, 21);
+}
+
+.add-post-close-btn {
+  position: absolute; 
+  top: 5px;           
+  right: 10px;   
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 10px;
+  line-height: 1;
+  padding: 0;
+  vertical-align: middle;
+}

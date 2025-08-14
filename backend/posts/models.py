@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.db.models import Avg
+from django.conf import settings
+
 
 User = get_user_model()
 
@@ -10,7 +12,7 @@ class Post(models.Model):
     tags = models.CharField(max_length=255)
     content = models.TextField()
     created_at = models.DateTimeField(default=timezone.now)
-    author = models.ForeignKey(User,on_delete=models.CASCADE,related_name='posts' )
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='posts' )
     average_rating = models.FloatField(default=0.0)
 
     def __str__(self):
