@@ -1,8 +1,8 @@
 import AnecdotRandom from '../components/AnecdotRandom'
-import '../css/MainPage.css'
+import '../css/AnecdotRandom.css'
 
 
-function MainPage(){
+function RandomAnecdot(){
     return(
         <main>
             <AnecdotRandom />
@@ -10,4 +10,4 @@ function MainPage(){
     )
 }
 
-export default MainPage
+export default RandomAnecdot

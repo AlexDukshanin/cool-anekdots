@@ -22,7 +22,7 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     name = models.CharField(max_length=200, )
-    age = models.PositiveBigIntegerField(null=True, blank=True)
+    age = models.DateField(null=True, blank=True)
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True, default='../static/user.png')
     created_at = models.DateTimeField(default=timezone.now)
 

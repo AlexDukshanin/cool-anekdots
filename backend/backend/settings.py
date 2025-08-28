@@ -30,7 +30,8 @@ INSTALLED_APPS = [
     "users",
     'posts',
     'Ratings.apps.RatingsConfig',
-    'corsheaders'
+    'corsheaders',
+    'taggit',
 ]
 
 MIDDLEWARE = [

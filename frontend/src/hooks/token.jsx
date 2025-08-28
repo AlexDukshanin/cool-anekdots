@@ -1,5 +1,8 @@
+import { useCallback } from "react";
+
 const useAuthFetch = () => {
-  const refreshAccessToken = async () => {
+  // Мемoизируем refreshAccessToken, чтобы ссылка на функцию не менялась
+  const refreshAccessToken = useCallback(async () => {
     const refresh = localStorage.getItem('refresh');
     if (!refresh) return null;
 
@@ -19,13 +22,13 @@ const useAuthFetch = () => {
       window.location.href = '/login';
       return null;
     }
-  };
+  }, []);
 
-  const authFetch = async (url, options = {}) => {
+  // Мемoизируем authFetch, зависимость только от refreshAccessToken
+  const authFetch = useCallback(async (url, options = {}) => {
     let token = localStorage.getItem('access');
 
     const addAuthHeader = (opts) => {
-      
       const isFormData = opts.body instanceof FormData;
 
       return {
@@ -48,7 +51,7 @@ const useAuthFetch = () => {
     }
 
     return response;
-  };
+  }, [refreshAccessToken]);
 
   return authFetch;
 };

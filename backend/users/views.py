@@ -5,16 +5,18 @@ from rest_framework.permissions import AllowAny
 from .models import CustomUser
 from rest_framework.permissions import IsAuthenticated
 from .serializers import UsersSerializer, RegisterSerializer, loginSerializer
-from django.shortcuts import render, redirect
 from django.contrib.auth import update_session_auth_hash
 from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth import update_session_auth_hash
 from rest_framework import status
+
+
 
 
 
@@ -64,6 +66,15 @@ class UserProfileView(RetrieveUpdateAPIView):
     def get_object(self):
         return self.request.user
     
+    @api_view(['GET'])
+    def current_user(request):
+        user = request.user
+        return Response({
+            "username": user.username,
+            "is_superuser": user.is_superuser,
+            "is_staff": user.is_staff,
+        })
+    
 
 class ChangePasswordView(APIView):
     permission_classes = [IsAuthenticated]  # Требуется авторизация
@@ -92,3 +103,6 @@ class ChangePasswordView(APIView):
         update_session_auth_hash(request, user)
 
         return Response({"detail": "Пароль успешно изменён."}, status=status.HTTP_200_OK)
+    
+
+    
