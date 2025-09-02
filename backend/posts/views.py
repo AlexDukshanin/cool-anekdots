@@ -11,17 +11,18 @@ class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
     permission_classes = [AllowAny]  # Все могут смотреть обычные посты
 
+    # Вывод страницы с постами
+    # Если пользователь авторизован и его is_staf == true, тогда он видет все посты
+    # Если нет то видет все, кроме постов в с тегом "on_modeated"
     def get_queryset(self):
         user = self.request.user
         if user.is_authenticated and user.is_staff:
-            # Модератор видит все посты
             return Post.objects.all()
-        # Обычные пользователи видят только посты без тега on_moderated
         return Post.objects.exclude(tags__name__iexact="on_moderated")
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
-
+    # Фнкция которая берет рандомный пост по id, эим посты рендерятся на страницу рандомного анекдота 
     @action(detail=False, methods=['get'])
     def random(self, request):
         posts = self.get_queryset()
@@ -34,6 +35,7 @@ class PostViewSet(viewsets.ModelViewSet):
         post = posts[random_index]
         serializer = PostSerializer(post, context={'request': request})
         return Response(serializer.data)
+    
 
     @action(detail=False, methods=['get'])
     def on_moderated(self, request):

@@ -1,16 +1,18 @@
 import React, { useEffect, useState, useMemo } from "react";
 import useAuthFetch from '../../hooks/token'
-
+import '../../css/MainPage.css'
 
 function MainPage() {
     const [posts, setPosts] = useState([])
     const [user,setUser] = useState(null)
     const authFetch = useAuthFetch()
     const [tag, setTag] = useState('default')
-    const [ moderate, setModerate ] = useState(false)
+
+
+    const [editingName, setEditingName] = useState("")
     const [editingPostId, setEditingPostId] = useState(null);
     const [editingContent, setEditingContent] = useState("");
-    const [ tags, setTags] = useState([])
+    const [editingTags, setEditingTags] = useState([])
 
 
     useEffect(() => {
@@ -20,17 +22,18 @@ function MainPage() {
                     method: 'GET',
                     headers: { "Content-Type": "application/json" }
                 })
-
                 if (tag == "on_moderated") {
                     response = await authFetch("http://127.0.0.1:8000/api/posts/on_moderated/", {
                         method: "GET",
                         headers: { "Content-Type": "application/json" },
                     })
                 }
-          
                 if (response.ok) {
                     const data = await response.json();
                     setPosts(data);
+                    data.forEach(el => {
+                      console.log(el.tags)
+                    });
                 }
             } catch (error) {
                 console.error("Ошибка при загрузке постов", error);
@@ -63,7 +66,6 @@ function MainPage() {
         // данные уже пришли от бэка готовыми
         return posts;
     }
-
     return posts.filter((post) => {
         if (tag === "animals") return post.tags === "animals";
         if (tag === "new") return post.is_new === true;
@@ -75,10 +77,10 @@ function MainPage() {
     }, [posts, tag]);
 
     const addTags = (tag) => {
-        if (tags.includes(tag)) {
-            setTags(tags.filter( t => t !== tag))
+        if (editingTags.includes(tag)) {
+            setEditingTags(editingTags.filter( t => t !== tag))
         } else {
-            setTags([...tags, tag])
+            setEditingTags([...editingTags, tag])
         }
     }
 
@@ -91,13 +93,16 @@ function MainPage() {
         const response = await authFetch(`http://127.0.0.1:8000/api/posts/${id}/`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ content: editingContent }),
+            body: JSON.stringify({ 
+              content: editingContent,
+              tags: editingTags}),
         });
 
         if (response.ok) {
             const updatedPost = await response.json();
             setPosts(posts.map(p => p.id === id ? updatedPost : p));
             setEditingPostId(null);
+            setEditingTags([]);
         }
         } catch (error) {
         console.error("Ошибка при сохранении поста", error);
@@ -105,7 +110,7 @@ function MainPage() {
     };
 
   return (
-    <main>
+    <main className="main-section">
       <div className="main-container">
         <span className="main-container-tags">
           <button onClick={() => setTag("default")}>Все</button>
@@ -113,15 +118,14 @@ function MainPage() {
           <button onClick={() => setTag("new")}>Новое</button>
           <button onClick={() => setTag("worst")}>Не лучший</button>
           <button onClick={() => setTag("best")}>Лучшие</button>
-          <button onClick={() => setTag("old")}>Старое</button>
           {user?.is_staff && (
             <button onClick={() => setTag("on_moderated")}>Посты на модерации</button>
           )}
         </span>
 
-        <section>
+        <section> 
           {filteredPosts.map((post) => (
-            <div className="main-container-card" key={post.id}>
+            <div className="main-section- container" key={post.id}>
               <h2 className="main-container-card-name">{post.title}</h2>
 
               {editingPostId === post.id ? (
@@ -130,13 +134,14 @@ function MainPage() {
                     value={editingContent}
                     onChange={(e) => setEditingContent(e.target.value)}
                   />
+                  <p>Теги поста:</p> 
                   <div className="tag-buttons">
-                    {['animals', 'new', 'best', 'worst', 'old'].map(tag => (
+                    {['animals', 'new', 'best', 'worst', 'old','on_moderated','funny'].map(tag => (
                         <button
                         key={tag}
                         type="button"
                         onClick={() => addTags(tag)}
-                        className={tags.includes(tag) ? "selected" : ""}
+                        className={editingTags.includes(tag) ? "tag-button-selected" : "tag-button"}
                         >
                         {tag}
                         </button>
@@ -151,7 +156,9 @@ function MainPage() {
                   {user?.is_staff && (
                     <button onClick={() => {
                       setEditingPostId(post.id);
+                      setEditingName(post.name)
                       setEditingContent(post.content);
+                      setEditingTags(post.tags || [])
                     }}>
                       Редактировать
                     </button>

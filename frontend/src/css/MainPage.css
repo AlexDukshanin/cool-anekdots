@@ -27,6 +27,7 @@
   background: #808080;
   z-index: 0;
   opacity: 0.2;
+  pointer-events: none;
 }
 
 .main-section-container {
@@ -36,5 +37,33 @@
     border-radius: 10px;
     margin: 20px;
     padding: 20px;
+}
 
+.tag-buttons {
+  display: flex;
+}
+
+.tag-button {
+  display: flex;
+  padding:5px;
+  margin: 2px;
+  box-shadow: 0 2px 0 #111; 
+  background-color: #292929;
+  color: #ffa31a;
+  border: 1px solid black;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.tag-button-selected {
+  display: flex;
+  padding:5px;
+  margin: 2px;
+  transform: translateY(2px);
+  box-shadow: 0 0 0 #111;
+  background-color: #000000;
+  color: #ffa31a;
+  border: 1px solid black;
+  border-radius: 5px;
+  font-size: 16px;
 }
