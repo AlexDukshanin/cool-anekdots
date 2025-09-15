@@ -59,7 +59,8 @@ function AddPostPage() {
                 body: JSON.stringify({ 
                     title, 
                     content,
-                    tags:["on_moderation"],})
+                    tags:["on_moderated"],
+                })
                 })
             if (response.ok) {
                 setSuccess('Пост успешно добавлен!');

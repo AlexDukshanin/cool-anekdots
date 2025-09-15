@@ -2,41 +2,58 @@ import React, { useEffect, useState, useMemo } from "react";
 import useAuthFetch from '../../hooks/token'
 import '../../css/MainPage.css'
 import TagSelector from "./TagSelector";
+import tagOptions from "./TagOptions";
+import Pagination from "./Pagination";
 
 function MainPage() {
     const [posts, setPosts] = useState([])
     const [user,setUser] = useState(null)
     const authFetch = useAuthFetch()
     const [tag, setTag] = useState([])
+    const [sortOrder, setSortOrder] = useState(null)
+    const [ page, setPage] = useState(1)
+    const [ pageSize, setPageSize] = useState(10)
 
     const [editingName, setEditingName] = useState("")
     const [editingPostId, setEditingPostId] = useState(null);
     const [editingContent, setEditingContent] = useState("");
     const [editingTags, setEditingTags] = useState([])
-  
-    const tagOptions = [
-      { value: "PostMetaIrony", label: "Мета-Ирония" },
-      { value: "Classik", label: "Классика"},
-      { value: "VasilyIvanych", label: "Про Василия Иваныча" },
-      { value: "Porychick", label: "Про поручика" },
-      { value: 'vovchik', label: "Вовочка"},
-      { value: 'milord', label: "Царь"},
-      { value: 'shtirlitz', label: "Штирлиц"},
-      { value: "chukcha", label: "Чукча"},
-      { value: 'soldiers', label: "Военные"},
-      { value: 'medic', label: "Врачи"},
-      { value: 'stydents', label: "Школьники"},
-      { value: 'cowboy', label: "Ковбои"},
-      { value: 'priests', label: "Батюшки"},
-      { value: "alkoghol", label: "Алкоголики" },
-      { value: "animals", label: "Про животных" },
-      { value: 'school', label: "Школа"},
-      { value: 'WieldWest', label: "Дикий Запад"},
-      { value: 'bar', label: "Заходит как то в бар..."},
-      { value: "island", label: "Необитаемый остров" },
-      { value: "army", label: "Армия"},
-      { value: "on_moderated", label: "на модерации"}
-  ];
+    /**
+     * Берет весь массив TagOption, выделяет из него все опции, их мы передаем в теги которые админ моежт проставить посту
+     */
+    const allOptions = [
+      ...tagOptions.flatMap(el => el.options || []),
+      { value: "on_moderated", label: "На модерации" }
+    ];
+    
+    /**
+   * Функция для сортировки постов по тегам
+   * если массив с тегами пустой выводит все посты, если есть на модерации - те что на модерации
+   */
+  const filteredPosts = useMemo(() => {
+    let result
+    if (tag.length === 0 || tag.includes("on_moderated")) {
+      result = posts
+    } else { 
+      result = posts.filter((post) => {
+      if (!Array.isArray(post.tags)) return false;
+      return tag.every((t) => post.tags.includes(t));
+      });
+    }
+
+    if (sortOrder === "best") {
+      result = [...result].sort((a,b) => b.average_rating - a.average_rating)
+    } else if ( sortOrder === "worst") {
+      result = [...result].sort((a,b) => a.average_rating - b.average_rating )
+    }
+    return result
+    }, [posts, tag, sortOrder]);
+
+    const paginationPosts = useMemo(() => {
+      const start = (page - 1) * pageSize
+      const end = start + pageSize
+      return filteredPosts.slice(start, end)
+    }, [filteredPosts, page, pageSize])
 
     useEffect(() => {
     const getPosts = async () => {
@@ -87,20 +104,7 @@ function MainPage() {
     fetchUser();
   }, [authFetch]);
 
-  /**
-   * Функция для сортировки постов по тегам
-   * если массив с тегами пустой выводит все посты, если есть на модерации - те что на модерации
-   */
-  const filteredPosts = useMemo(() => {
-    if (tag.length === 0 || tag.includes("on_moderated")) {
-      return posts;
-    }
-
-    return posts.filter((post) => {
-        if (!Array.isArray(post.tags)) return false;
-        return tag.every((t) => post.tags.includes(t));
-      });
-    }, [posts, tag]);
+  
 
 
   /**
@@ -151,12 +155,13 @@ function MainPage() {
         <TagSelector 
         tag={tag}
         setTag={setTag}
-        user={user}/>
+        user={user}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}/>
         <section> 
-          {filteredPosts.map((post) => (
+          {paginationPosts.map((post) => (
             <div className="main-section-container" key={post.id}>
               <h2 className="main-container-card-name">{post.title}</h2>
-
               {editingPostId === post.id ? (
                 <div className="edit-form">
                   <input type="text" 
@@ -168,7 +173,7 @@ function MainPage() {
                   />
                   <p>Теги поста:</p> 
                   <div className="tag-buttons">
-                    {tagOptions.map(({ value, label }) => (
+                    {allOptions.map(({ value, label }) => (
                       <button
                         key={value}
                         type="button"
@@ -179,8 +184,17 @@ function MainPage() {
                       </button>
                     ))}
                   </div>
-                  <button onClick={() => handleSave(post.id)}>Сохранить</button>
-                  <button onClick={() => setEditingPostId(null)}>Отмена</button>
+                  <button 
+                    onClick={() => handleSave(post.id)}
+                    className="main-save-button">
+                      Сохранить
+                      </button>
+                  <button 
+                    onClick={() => setEditingPostId(null)}
+                    className="main-reject-button"
+                    >
+                    Отмена
+                    </button>
                 </div>
               ) : (
                 <>
@@ -191,21 +205,29 @@ function MainPage() {
                       setEditingName(post.title)
                       setEditingContent(post.content);
                       setEditingTags(post.tags || [])
-                    }}>
+                    }}
+                    className={`main-edit-button`}>
                       Редактировать
                     </button>
                   )}
                 </>
               )}
 
-              <span className="main-container-card-datetime">{post.created_at}</span>
-              <span className="main-container-card-author">{post.author_name}</span>
+              <span className="main-container-card-datetime">Опубликовано: {new Date(post.created_at).toLocaleDateString("ru-RU")}</span>
+              <span className="main-container-card-author">Автор: {post.author_name}</span>
               <span className="main-container-card-rating">
-                {post.average_rating ?? post.rating}
+                Рейтинг: {post.average_rating ?? post.rating}
               </span>
             </div>
           ))}
+          
         </section>
+        <Pagination
+        page={page}
+        setPage={setPage}
+        pageSize={pageSize}
+        setPageSize={setPageSize}
+        total={filteredPosts.length} />
       </div>
     </main>
   );

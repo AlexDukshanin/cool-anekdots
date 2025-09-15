@@ -1,62 +1,19 @@
 import React, { useState, useRef, useEffect } from "react";
-import Select from "react-select";
+import tagOptions from "./TagOptions";
 
-function TagSelector({ tag, setTag, user }) {
+function TagSelector({ tag, setTag, user, sortOrder, setSortOrder }) {
   const [ openDropdown, setOpenDropdown ] = useState(null)
   const dropdownRef = useRef([])
+  
 
-
-  const tagOptions = [
-  { label: "Стиль",
-    value: "style", 
-    options: [
-      { value: "PostMetaIrony", label: "Мета-Ирония" },
-      { value: "Classik", label: "Классика"}
-  ]},
-  { value: "character", 
-    label: "Персонажи", 
-    options: [
-      { value: "VasilyIvanych", label: "Про Василия Иваныча" },
-      { value: "Porychick", label: "Про поручика" },
-      { value: 'vovchik', label: "Вовочка"},
-      { value: 'milord', label: "Царь"},
-      { value: 'shtirlitz', label: "Штирлиц"},
-      { value: "chukcha", label: "Чукча"},
-  ]},
-  { value: "content", 
-    label: "По содержанию", 
-    options:[
-      { value: 'soldiers', label: "Военные"},
-      { value: 'medic', label: "Врачи"},
-      { value: 'stydents', label: "Школьники"},
-      { value: 'cowboy', label: "Ковбои"},
-      { value: 'priests', label: "Батюшки"},
-      { value: "alkoghol", label: "Алкоголики" },
-      { value: "animals", label: "Про животных" },
-      { }
-  ]},
-  {  value: "location",
-     label: "Место действия", 
-     options:[
-      { value: 'school', label: "Школе"},
-      { value: 'WieldWest', label: "Дикий Запад"},
-      { value: 'bar', label: "Заходит как то в бар..."},
-      { value: "island", label: "Необитаемый остров" },
-      { value: "army", label: "Армия"}
-  ]},
-  ];
   /**
    * функция закрывает окно при клике вне области меню
    */
   useEffect(() => {
     const handleClickOutside = (event) => {
-    const isOutside = dropdownRef.current.every(ref => 
-      ref && !ref.contains(event.target)
-    );
-    if (isOutside) {
-      setOpenDropdown(null)
+    const isOutside = dropdownRef.current.every(ref => ref && !ref.contains(event.target));
+      if (isOutside) setOpenDropdown(null);
     }
-  }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside)
   },[])
@@ -98,6 +55,7 @@ function TagSelector({ tag, setTag, user }) {
     return tag.includes(optionValue);
   };
 
+
   const hasSelectedOptions = (dropdown) => {
     if (!dropdown.options) return false;
     return dropdown.options.some(option => tag.includes(option.value));
@@ -105,7 +63,8 @@ function TagSelector({ tag, setTag, user }) {
 
     return(
     <div className="main-tag-selector">
-      <button
+      <div className="main-tag-option">
+        <button
         className={tag.length === 0 ? "tag-button-selected" : "tag-button"}
         onClick={() => {
           setTag([]);
@@ -113,6 +72,7 @@ function TagSelector({ tag, setTag, user }) {
       >
         Показать все
       </button>
+      </div>
       {tagOptions.map((dropdown,index) => (
         <div
         key={dropdown.value}
@@ -123,7 +83,6 @@ function TagSelector({ tag, setTag, user }) {
           onClick={() => toggleDropdown(dropdown.value)}>
             {dropdown.label} ▼
           </button>
-
           {openDropdown === dropdown.value && dropdown.options &&(
             <div className="main-dropdown-menu">
               {dropdown.options.map((option) => (
@@ -137,19 +96,50 @@ function TagSelector({ tag, setTag, user }) {
               ))}
             </div>
           )}
+          
         </div>
       ))}
-
-      
-
-      {user?.is_staff && (
+      <div className="main-tag-option" ref={el => dropdownRef.current["rating"] = el}>
         <button
-          className={tag.includes("on_moderated") ? "tag-button-selected" : "tag-button"}
-          onClick={() => toggleTag("on_moderated")}
+          className={`main-tag-value ${openDropdown === "rating" ? 'active' : ''}`}
+          onClick={() => toggleDropdown("rating")}
         >
-          Посты на модерации
+          По рейтингу ▼
         </button>
-      )}
+
+        {openDropdown === "rating" && (
+          <div className="main-dropdown-menu">
+            <button
+              className={`main-dropdown-item ${sortOrder === "best" ? 'selected' : ''}`}
+              onClick={() => { setSortOrder("best"); setOpenDropdown(null); }}
+            >
+              Сначала лучшие
+            </button>
+            <button
+              className={`main-dropdown-item ${sortOrder === "worst" ? 'selected' : ''}`}
+              onClick={() => { setSortOrder("worst"); setOpenDropdown(null); }}
+            >
+              Сначала худшие
+            </button>
+            <button
+              className={`main-dropdown-item ${sortOrder === null ? 'selected' : ''}`}
+              onClick={() => { setSortOrder(null); setOpenDropdown(null); }}
+            >
+              Без сортировки
+            </button>
+          </div>
+        )}
+      </div>
+      {user?.is_staff && (
+      <div className="main-tag-option">
+        <button 
+          className={`${tag.includes("on_moderation") ? 'tag-button-selected' : "tag-button"}`}
+          onClick={() => setTag(["on_moderated"])}
+        >
+          На модерации
+        </button>
+      </div>  
+    )}
     </div>
   );
 }

@@ -1,12 +1,12 @@
 .main-section {
-  width: 1000px;
-  min-height: 600px;
+  width: 1200px;
+  min-height: 1000px;
   height: auto;
-  background: #292929; /* мягкий фон */
+  background: #292929; 
   border-radius: 10px;
   padding: 30px 40px;
   color: #ffa31a;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3); /* тень как в card-container-splited */
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3); 
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -30,19 +30,10 @@
   pointer-events: none;
 }
 
-.main-section-container {
-    width: 800px;
-    height: auto;
-    border: 1px solid black;
-    border-radius: 10px;
-    margin: 20px;
-    padding: 20px;
-}
-
+/* Стили для строки тегов в верху списка анедотов */
 .tag-buttons {
   display: flex;
 }
-
 
 
 .main-tag-selector {
@@ -145,4 +136,73 @@
   background-color: #e8ffbd;
   color: #ffa31a;
   font-weight: 500;
+}
+/* Стили для постов*/
+
+.main-section-container {
+  width: 800px;
+  height: auto;
+  border: 1px solid black;
+  border-radius: 10px;
+  margin: 20px;
+  padding: 20px;
+}
+
+
+/* Стили для кнопки редактировать*/
+.main-edit-button {
+  padding: 5px 10px;
+  margin: 5px 0px;
+  width: 15%;
+  flex-shrink: 0;
+  border: 2px solid #dee2e6;
+  border-radius: 6px;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.main-edit-button:hover{
+  border-color: #ffa31a;
+  background-color: #ffa31a;
+
+}
+
+
+.main-save-button {
+    padding: 5px 10px;
+  margin: 5px 0px;
+  width: 15%;
+  flex-shrink: 0;
+  border: 2px solid #dee2e6;
+  border-radius: 6px;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.main-save-button:hover{
+  border-color: #27ff31;
+  background-color: #27ff31;
+
+}
+
+.main-reject-button {
+  padding: 5px 10px;
+  margin: 5px 10px;
+  width: 15%;
+  flex-shrink: 0;
+  border: 2px solid #dee2e6;
+  border-radius: 6px;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.main-reject-button:hover{
+  border-color: #ff4027;
+  background-color: #ff4027;
 }
