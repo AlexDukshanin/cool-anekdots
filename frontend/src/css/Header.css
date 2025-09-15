@@ -3,6 +3,7 @@ header {
     width: 100%;
     background-color: #1b1b1b;
     color: #ffa31a;
+    border-bottom: 1px solid #ffa31a;
     padding: 10px;
     position: fixed;
     top: 0;
@@ -15,8 +16,10 @@ header p {
     z-index: 10;
 }
 
+
 header h1,
 header p {
+    
     margin-left: 20px;
     z-index: 10;
 }
@@ -74,7 +77,8 @@ header p {
     right: 0;
     height: 100%;
     width:15%;
-    background-color: #1b1b1b;
+    background-color: #222222;
+    border: 1px solid #ffa31a;
     z-index: 5;
     transform: translateX(100%); 
     transition: transform 0.3s ease;

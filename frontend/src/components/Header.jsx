@@ -32,7 +32,7 @@ function Header() {
                 <p>Твои кореша заценят наши анекдоты</p>
             </div>
             <div className="links">
-                <Link className="link" to='/'>Главная</Link>
+                <Link className="link" to='/mainPage'>Главная</Link>
 
                 {isAuth ? (
                     <button onClick={handleLogout} className="link button-link">Выйти</button>
@@ -45,7 +45,7 @@ function Header() {
                     <div className="menu-links">
                         <Link onClick={showMenu} className="link menu-link" to="/">Рандомный анекдот</Link>
                         <Link onClick={showMenu} className="link menu-link" to='/profile'> Мой профиль</Link>
-                        <Link onClick={showMenu} className="link menu-link">Добавить анекдот</Link>
+                        <Link onClick={showMenu} className="link menu-link" to='/AddPost'>Добавить анекдот</Link>
                         <Link onClick={showMenu} className="link menu-link">Контакты </Link>
                     </div>
                 </div>

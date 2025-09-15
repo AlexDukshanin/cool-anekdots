@@ -68,14 +68,15 @@ const AnecdotRandom = ({ isAuthenticated  }) =>{
             {isAuth && (
               <div>
                 <p>Оцени анекдот:</p>
-                {[1, 2, 3, 4, 5].map(score => (
-                  <button className="random_anecdot_button" key={score} onClick={() => ratePost(score)}>{score}</button>
-                ))}
+                <div className="random_anecdot_buttons_group">
+                  {[1, 2, 3, 4, 5].map(score => (
+                    <button className="random_anecdot_button" key={score} onClick={() => ratePost(score)}>{score}</button>
+                  ))}
+                </div>
               </div>
             )}
             <button className="random_anecdot_button" onClick={fetchRandomPost}>Другой анекдот</button>
             <p className="random_anecdot_rating" >Автор: {post.author_name}</p>
-            {/* После отправки оценки имя автора пропадает */}
           </div>
         </Card3DAnimation>
       );

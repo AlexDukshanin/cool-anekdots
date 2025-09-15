@@ -1,30 +1,23 @@
-.random_anecdot {
-  width: 800px;
-  height: 600px;
-  background: #292929;
+.main-section {
+  width: 1200px;
+  min-height: 1000px;
+  height: auto;
+  background: #292929; 
   border-radius: 10px;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid #1b1b1b;
-  position: relative;
-  transform-style: preserve-3d;
-  transition: transform 0.3s ease-out;
+  padding: 30px 40px;
+  color: #ffa31a;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3); 
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   align-items: center;
-  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: relative;
   box-sizing: border-box;
+  margin-top: 120px;
+  padding-bottom: 40px
 }
 
-@keyframes linear {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.random_anecdot::before {
+.main-section::before {
   content: '';
   position: absolute;
   top: -50%;
@@ -34,67 +27,182 @@
   background: #808080;
   z-index: 0;
   opacity: 0.2;
+  pointer-events: none;
 }
 
-.random_anecdot_card {
-  z-index: 1;
-  text-align: center;
-  padding: 20px 30px;
-  color: #fff;
-}
-
-
-.random_anecdot_name {
-  max-height: 600px;
-  margin-bottom: 20px;
-  font-size: 30px;
-  font-weight: 750;
-  color: #ffa31a;
-}
-
-.random_anecdot_div {
-  border: 1px solid rgb(31, 29, 29);
-  border-radius: 5px;
-  padding: 10px;
-}
-
-.random_anecdot_text {
-  height: 250px;
-  max-height: 300px;
-  width: 600px;
-  max-width: 600px;
-  font-size: 18px;
-  margin: 0;
-  text-align: left;
-  line-height: 1.6;
-  overflow-y: auto;
-  margin: 0 auto;
+/* Стили для строки тегов в верху списка анедотов */
+.tag-buttons {
+  display: flex;
 }
 
 
-.random_anecdot_rating {
-  max-height: 600px;
-  margin: 20px 0px;
-  font-size: 20px;
-  font-weight: 750;
-  color: #ffa31a;
+.main-tag-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
 }
 
-.random_anecdot_button {
+.tag-button {
+  padding: 10px 15px;
+  border: 2px solid #dee2e6;
+  border-radius: 6px;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tag-button:hover {
+  border-color: #ffa31a;
+  background-color: #f8f9ff;
+}
+
+.tag-button-selected {
+  padding: 10px 15px;
+  border: 2px solid #ffa31a;
+  border-radius: 6px;
   background-color: #ffa31a;
-  border: none;
-  border-radius: 8px;
-  padding: 12px 24px;
-  font-size: 22px;
-  font-weight: bold;
   color: white;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
-  box-shadow: 0 0 20px rgba(255, 163, 26, 0.3);
-  align-self: center;
 }
 
-.random_anecdot_button:hover {
-  background-color: #e69300;
-  transform: translateY(-2px);
+.main-tag-option {
+  position: relative;
+  display: inline-block;
+  min-width: 120px; 
+}
+
+.main-tag-value {
+  padding: 10px 15px;
+  width: 100%;
+  flex-shrink: 0;
+  border: 2px solid #dee2e6;
+  border-radius: 6px;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.main-tag-value:hover {
+  border-color: #ffa31a;
+  background-color: #f8f9ff;
+}
+
+.main-tag-value.active {
+  border-color: #ffa31a;
+  background-color: #ffa31a;
+  color: white;
+}
+
+.main-tag-value.has-selected {
+  border-color: #f8bb5f;
+  background-color: #e8f5e8;
+  color:#ffa31a;
+}
+
+.selected-indicator {
+  color: #ffa31a;
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+.main-dropdown-menu {
+  position: absolute;
+  background: white;
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  z-index: 1000;
+  margin-top: 5px;
+}
+
+.main-dropdown-item {
+  width: 100%;
+  padding: 10px 15px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.main-dropdown-item:hover {
+  background-color: #f8f9fa;
+}
+
+.main-dropdown-item.selected {
+  background-color: #e8ffbd;
+  color: #ffa31a;
+  font-weight: 500;
+}
+/* Стили для постов*/
+
+.main-section-container {
+  width: 800px;
+  height: auto;
+  border: 1px solid black;
+  border-radius: 10px;
+  margin: 20px;
+  padding: 20px;
+}
+
+
+/* Стили для кнопки редактировать*/
+.main-edit-button {
+  padding: 5px 10px;
+  margin: 5px 0px;
+  width: 15%;
+  flex-shrink: 0;
+  border: 2px solid #dee2e6;
+  border-radius: 6px;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.main-edit-button:hover{
+  border-color: #ffa31a;
+  background-color: #ffa31a;
+
+}
+
+
+.main-save-button {
+    padding: 5px 10px;
+  margin: 5px 0px;
+  width: 15%;
+  flex-shrink: 0;
+  border: 2px solid #dee2e6;
+  border-radius: 6px;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.main-save-button:hover{
+  border-color: #27ff31;
+  background-color: #27ff31;
+
+}
+
+.main-reject-button {
+  padding: 5px 10px;
+  margin: 5px 10px;
+  width: 15%;
+  flex-shrink: 0;
+  border: 2px solid #dee2e6;
+  border-radius: 6px;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.main-reject-button:hover{
+  border-color: #ff4027;
+  background-color: #ff4027;
 }
