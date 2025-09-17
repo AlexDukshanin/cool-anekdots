@@ -12,7 +12,7 @@ function Pagination({ page, setPage, pageSize, setPageSize, total}) {
                     <button
                     key={i}
                     onClick={() => setPage(i)}
-                    className={`main-pagination-buttons-group-button${ page === i ? 'button-active' :
+                    className={`main-pagination-button-group-button${ page === i ? ' button-active' :
                     ''}`}>
                     {i}
                     </button>
@@ -24,39 +24,50 @@ function Pagination({ page, setPage, pageSize, setPageSize, total}) {
 
     return (
         <section className="main-pagination-control">
-            {/* Кнопка "Предыдущая страница" */}
-            <button
-            disabled={page === 1}
-            onClick={() => setPage(page - 1)}
-            className="main-pagination-button">
-                Предыдущая страница
-            </button>
-          
-            {/* кнопки страниц (текущая +\- 3) */}
-            <div className="main-pagination-buttons-group">
-                {renderPageButton(page, totalPages, setPage)}
-            </div>
-            {/* Кнопка "Следующая страница" */}
-            <button
-            disabled ={page >= totalPages} 
-            className="main-pagination-button"
-            onClick={() => setPage(page + 1)}
+            <div className="main-pagination-buttton-field">
+                {/* Кнопка "Предыдущая страница" */}
+                <button
+                disabled={page === 1}
+                onClick={() => setPage(page - 1)}
+                className={`main-pagination-button${ page===1 ? ' button-disabled' : ''}`}>
+                    Предыдущая страница
+                </button>
+            
+                {/* кнопки страниц (текущая +\- 3) */}
+                <div className="main-pagination-button-group">
+                    {renderPageButton(page, totalPages, setPage)}
+                </div>
+                {/* Кнопка "Следующая страница" */}
+                <button
+                disabled ={page >= totalPages} 
+                className={`main-pagination-button${ page >= totalPages ? ' button-disabled' : ''}`}
+                onClick={() => setPage(page + 1)}
             >Следующая страница</button>
-            {/* Показывает текущую страницу, ее номер */}
-              <span className="main-pagination-info">
-                Станица {page} из {totalPages || 1}
-            </span>
-            <select 
-            value={pageSize}
-            onChange={(e) => {
-                setPageSize(Number(e.target.value))
-                }}>
+            </div>
+
+            <div className="main-pagination-buttton-field">
+                {/* Показывает текущую страницу, ее номер */}
+                <span className="main-pagination-info">
+                    Страница {page} из {totalPages || 1}
+                </span>
+            </div>
+            <div className="main-pagination-buttton-field">
+                <p>Показать на странице
+                <select 
+                value={pageSize}
+                onChange={(e) => {
+                    setPageSize(Number(e.target.value))
+                    }}>
                     <option value="5">5</option>
                     <option value="10">10</option>
                     <option value="15">15</option>
                     <option value="20">20</option>
                     <option value="25">25</option>
-                </select>
+            </select>
+            </p>
+
+            </div>
+            
         </section>
     )
 

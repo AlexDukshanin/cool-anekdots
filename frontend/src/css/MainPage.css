@@ -1,6 +1,5 @@
 .main-section {
   width: 1200px;
-  min-height: 1000px;
   height: auto;
   background: #292929; 
   border-radius: 10px;
@@ -140,7 +139,7 @@
 /* Стили для постов*/
 
 .main-section-container {
-  width: 800px;
+  width: 930px;
   height: auto;
   border: 1px solid black;
   border-radius: 10px;
@@ -169,9 +168,31 @@
 
 }
 
+/* Стили для поля редактирования */
+
+.edit-form {
+
+}
+
+.edit-form-input {
+
+}
+
+.edit-form-textarea {
+  
+}
+
+.tag-buttons {
+
+}
+
+.tag-button-selected {
+
+}
+
 
 .main-save-button {
-    padding: 5px 10px;
+  padding: 5px 10px;
   margin: 5px 0px;
   width: 15%;
   flex-shrink: 0;
@@ -206,3 +227,150 @@
   border-color: #ff4027;
   background-color: #ff4027;
 }
+
+/* Информация окторая находится внизу поста об атворе, дате и оценка поста */
+.main-container-card-info{
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.main-container-card-author:hover{
+  color: #976211;
+  cursor: pointer;
+}
+
+.main-pagination-buttton-field{
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.main-pagination-buttton-field{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main-pagination-button {
+  box-sizing: border-box;
+  padding: 5px 10px;
+  margin: 5px 0px;
+  width: 20%;
+  flex-shrink: 0;
+  color: #333;
+  border: 2px solid #dee2e6;
+  border-radius: 6px;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.button-disabled {
+  color: rgba(16, 16, 16, 0.3);
+  border-color: #eee;
+  background: #f8f9fa;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.main-pagination-button:not(.button-disabled):hover{
+  border-color: #ffa31a;
+  background: #ffa31a;
+  color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+
+.main-pagination-button-group-button {
+  box-sizing: border-box;
+  padding: 8px 14px;
+  margin: 4px;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+  background: #ffffff;
+  color: #131313;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* hover-эффект */
+.main-pagination-button-group-button:not(.button-active):hover {
+  border-color: #ffa31a;
+  background: #ffa31a;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* активная кнопка (текущая страница) */
+.button-active {
+  background: linear-gradient(135deg, #ff8800, #ffa31a);
+  color: white;
+  border: none;
+  font-weight: 600;
+  box-shadow: 0 0 12px rgba(255, 163, 26, 0.6);
+}
+
+/* плавный клик */
+.main-pagination-button-group-button:active {
+  transform: scale(0.95);
+}
+
+.main-pagination-control select {
+  margin: 0px 5px ;
+  padding: 4px;
+  font-size: 14px;
+  color: #131313;
+
+  background: #fff url("data:image/svg+xml;utf8,<svg fill='%23333' height='14' viewBox='0 0 24 24' width='14' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") 
+    no-repeat right 12px center;
+  background-size: 14px;
+
+  border: 2px solid #dee2e6;
+  border-radius: 7px;   /* делаем «чипс» */
+  cursor: pointer;
+
+  appearance: none; 
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  transition: all 0.3s ease; /* плавность */
+  min-width: 45px
+}
+
+/* hover эффект */
+.main-pagination-control select:hover {
+  border-color: #ffa31a;
+  box-shadow: 0 4px 10px rgba(255, 163, 26, 0.2);
+}
+
+/* focus */
+.main-pagination-control select:focus {
+  outline: none;
+  border-color: #ff8800;
+  box-shadow: 0 0 8px rgba(255, 136, 0, 0.4);
+}
+
+/* стилизация опций */
+.main-pagination-control option {
+  padding: 10px;
+  border-radius: 8px; /* не всегда срабатывает, зависит от браузера */
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+/* наведение на option */
+.main-pagination-control option:hover {
+  background: #ffa31a;
+  color: white;
+}
+
+/* выбранная option */
+.main-pagination-control option:checked {
+  background: #ff8800;
+  color: white;
+}
+
+

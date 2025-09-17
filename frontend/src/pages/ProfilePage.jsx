@@ -142,7 +142,14 @@ const ProfilePage = () => {
                                 <div className="profile-info">
                                     <p className="profile-info-field"><strong>Имя:</strong> {profile.name} </p>
                                     <p className="profile-info-field"><strong>Email:</strong> {profile.email}</p>
-                                    <p className="profile-info-field"><strong>Возраст:</strong> {profile.age}</p>
+                                    <p className="profile-info-field"><strong>Дата рождения:</strong> {""} {(() => {
+                                        const date = new Date(profile.age)
+                                        return date.toLocaleDateString("ru-Ru",{
+                                            day: "numeric",
+                                            month: "long",
+                                            year: "numeric",
+                                        });
+                                    })()}</p>
                                 </div>
                                 <div className="profile-avatar">
                                     <picture>
