@@ -164,10 +164,12 @@ function MainPage() {
               <h2 className="main-container-card-name">{post.title}</h2>
               {editingPostId === post.id ? (
                 <div className="edit-form">
-                  <input type="text" 
+                  <input type="text"
+                  className="edit-form-input" 
                   value={editingName}
                   onChange={(e) => setEditingName(e.target.value)} />
                   <textarea
+                    className="edit-form-textarea"
                     value={editingContent}
                     onChange={(e) => setEditingContent(e.target.value)}
                   />
@@ -212,12 +214,14 @@ function MainPage() {
                   )}
                 </>
               )}
-
-              <span className="main-container-card-datetime">Опубликовано: {new Date(post.created_at).toLocaleDateString("ru-RU")}</span>
-              <span className="main-container-card-author">Автор: {post.author_name}</span>
-              <span className="main-container-card-rating">
-                Рейтинг: {post.average_rating ?? post.rating}
-              </span>
+              <div className="main-container-card-info">
+                <span className="main-container-card-datetime">Опубликовано: {new Date(post.created_at).toLocaleDateString("ru-RU")}</span>
+                <span >Автор: <span className="main-container-card-author">{post.author_name}</span></span>
+                <span className="main-container-card-rating">
+                  Рейтинг: {post.average_rating ?? post.rating}
+                </span>
+              </div>
+              
             </div>
           ))}
           
