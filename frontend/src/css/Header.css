@@ -4,7 +4,7 @@ header {
     background-color: #1b1b1b;
     color: #ffa31a;
     border-bottom: 1px solid #ffa31a;
-    padding: 10px;
+    padding: 8px;
     position: fixed;
     top: 0;
     left: 0;
@@ -19,7 +19,6 @@ header p {
 
 header h1,
 header p {
-    
     margin-left: 20px;
     z-index: 10;
 }

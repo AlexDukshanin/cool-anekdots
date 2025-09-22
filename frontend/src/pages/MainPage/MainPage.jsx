@@ -6,13 +6,23 @@ import tagOptions from "./TagOptions";
 import Pagination from "./Pagination";
 
 function MainPage() {
+  /* сюда помещаем посты*/
     const [posts, setPosts] = useState([])
+    /* сюда данные о пользователе*/
     const [user,setUser] = useState(null)
     const authFetch = useAuthFetch()
+    /* сюда список тегов который будем передавать на сервер при редактировании*/
     const [tag, setTag] = useState([])
+    /* сюда помещаем теги выбранные для сортировки*/
     const [sortOrder, setSortOrder] = useState(null)
+    /* сюда передаем данные о том, на какой странице нахоидтся пользователь, для того что бы заетм удобно перемещаться по страницам*/
     const [ page, setPage] = useState(1)
+    /* сюда данные о том сколько постов показывать на странице*/
     const [ pageSize, setPageSize] = useState(10)
+    /* переменная которая хранит данные открто ли окно поиска тегов для поста или нет*/
+    const [ searchDropdown, setSearchDpowdown ] = useState(null)
+    // поле которое содержит строку, которую вводит модератор для поиска постов 
+    const [ searchQuery, setSearchQuery ] = useState("")
 
     const [editingName, setEditingName] = useState("")
     const [editingPostId, setEditingPostId] = useState(null);
@@ -25,6 +35,8 @@ function MainPage() {
       ...tagOptions.flatMap(el => el.options || []),
       { value: "on_moderated", label: "На модерации" }
     ];
+    // переменная которая содержит теги отфильрованные переменной выше, те есть теги которые получилось найти по введенной строке
+    const [ filteredTags, setFilteredTags] = useState(allOptions)
     
     /**
    * Функция для сортировки постов по тегам
@@ -147,6 +159,16 @@ function MainPage() {
         }
     };
 
+    const handleSearchChange = (e) => {
+      const query = e.target.value
+      setSearchQuery(query)
+
+      setFilteredTags(
+        allOptions.filter((tag) =>
+          tag.label.toLowerCase().includes(query.toLowerCase())
+        )
+      )
+    }
 
 
   return (
@@ -164,28 +186,71 @@ function MainPage() {
               <h2 className="main-container-card-name">{post.title}</h2>
               {editingPostId === post.id ? (
                 <div className="edit-form">
+                  <label htmlFor="input">Редактировать название</label>
                   <input type="text"
                   className="edit-form-input" 
                   value={editingName}
                   onChange={(e) => setEditingName(e.target.value)} />
+                  <label htmlFor="textarea">Редактировтаь текст</label>
                   <textarea
                     className="edit-form-textarea"
                     value={editingContent}
                     onChange={(e) => setEditingContent(e.target.value)}
                   />
-                  <p>Теги поста:</p> 
-                  <div className="tag-buttons">
-                    {allOptions.map(({ value, label }) => (
-                      <button
-                        key={value}
-                        type="button"
-                        onClick={() => addTags(value)}
-                        className={editingTags.includes(value) ? "tag-button-selected" : "tag-button"}
-                      >
-                        {label}
-                      </button>
-                    ))}
+                  
+                  <p>Теги поста</p>
+                  <div className="main-tag-buttons">
+                    <div className="main-tag-dropdawn">
+                    {editingTags.length === 0 ? (
+                      <div className="main-tag-buttons-NoTags">
+                        Постов на модерации нет
+                      </div>
+                    ) : ( allOptions.map(({ value, label}) => {
+                      if (editingTags.includes(value)) {
+                        return(
+                          <button 
+                          key={value}
+                          className="tag-button-selected"
+                          onClick={() => addTags(value)}
+                          type="button"
+                          >
+                            {label}
+                          </button>
+                        )
+                      }
+                    })
+                    )}
+                    </div>
                   </div>
+                  <div className="tag-input-tag-search">
+                    <label 
+                    htmlFor="input"
+                    className=""
+                    >Добавить теги:</label>
+                    <input 
+                    type="text"
+                    placeholder="поиск тегов"
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    onClick={() => setSearchDpowdown(true)} />
+                  </div>
+                    <div className="main-tag-dropdawn">
+                    {filteredTags.map(({ value, label}) => {
+                      if(!editingTags.includes(value)) {
+                        return(
+                          <button
+                          key={value}
+                          type="button"
+                          className="tag-button"
+                          onClick={() => addTags(value)}
+                        >
+                          {label}
+                        </button>
+                        )
+                      }
+                    })}
+                    </div>
+                  <div className="main-section-button-group">
                   <button 
                     onClick={() => handleSave(post.id)}
                     className="main-save-button">
@@ -197,6 +262,7 @@ function MainPage() {
                     >
                     Отмена
                     </button>
+                  </div>
                 </div>
               ) : (
                 <>
