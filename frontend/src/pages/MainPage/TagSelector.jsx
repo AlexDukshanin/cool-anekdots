@@ -1,22 +1,18 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useClickAway } from "react-use";
 import tagOptions from "./TagOptions";
 
 function TagSelector({ tag, setTag, user, sortOrder, setSortOrder }) {
   const [ openDropdown, setOpenDropdown ] = useState(null)
-  const dropdownRef = useRef([])
+  const dropdownRef = useRef(null)
   
 
   /**
    * функция закрывает окно при клике вне области меню
    */
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-    const isOutside = dropdownRef.current.every(ref => ref && !ref.contains(event.target));
-      if (isOutside) setOpenDropdown(null);
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  },[])
+   useClickAway(dropdownRef, () => {
+    setOpenDropdown(null);
+  });
 
   /**
    * Если в массиве тегов эллемент есть то его удаляем, если нет - добавляем
@@ -76,8 +72,7 @@ function TagSelector({ tag, setTag, user, sortOrder, setSortOrder }) {
       {tagOptions.map((dropdown,index) => (
         <div
         key={dropdown.value}
-        className={`main-tag-option ${isOptionSelected(dropdown.value) ? 'main-tag-selected' : ''}`}
-        ref={el => dropdownRef.current[index] = el}>
+        className={`main-tag-option ${isOptionSelected(dropdown.value) ? 'main-tag-selected' : ''}`}>
           <button
            className={`main-tag-value ${openDropdown === dropdown.value ? 'active' : ''} ${hasSelectedOptions(dropdown) ? 'has-selected' : ''}`}
           onClick={() => toggleDropdown(dropdown.value)}>
@@ -99,7 +94,7 @@ function TagSelector({ tag, setTag, user, sortOrder, setSortOrder }) {
           
         </div>
       ))}
-      <div className="main-tag-option" ref={el => dropdownRef.current["rating"] = el}>
+      <div className="main-tag-option">
         <button
           className={`main-tag-value ${openDropdown === "rating" ? 'active' : ''}`}
           onClick={() => toggleDropdown("rating")}
@@ -133,7 +128,7 @@ function TagSelector({ tag, setTag, user, sortOrder, setSortOrder }) {
       {user?.is_staff && (
       <div className="main-tag-option">
         <button 
-          className={`${tag.includes("on_moderation") ? 'tag-button-selected' : "tag-button"}`}
+          className={`${tag.includes("on_moderated") ? 'tag-button-selected' : "tag-button"}`}
           onClick={() => setTag(["on_moderated"])}
         >
           На модерации

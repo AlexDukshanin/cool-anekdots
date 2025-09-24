@@ -6,7 +6,7 @@ import Card3DAnimation from "./AnecdotAnimation";
 const AnecdotRandom = ({ isAuthenticated  }) =>{
     const[post, setPost] = useState(null)
     const { isAuth } = useAuth();
-    const cardRef = useRef(null);
+
 
     const fetchRandomPost = () => {
         axios.get('http://127.0.0.1:8000/api/posts/random/')
@@ -23,7 +23,7 @@ const AnecdotRandom = ({ isAuthenticated  }) =>{
           score: score
         }, {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('access')}`  // если используешь JWT
+            Authorization: `Bearer ${localStorage.getItem('access')}`  
           }
         })
           .then(res => {
@@ -39,11 +39,7 @@ const AnecdotRandom = ({ isAuthenticated  }) =>{
       //добавление отступов перед дефизом 
       const formatContent = (text) => {
         if (!text) return ""
-        return text.replace(/-/g, function(word){
-          switch(word){
-            case '-':return('</br>-')
-          }
-        })
+        return text.replace(/-/g, "<br/> -")
       }
 
       useEffect(() => {

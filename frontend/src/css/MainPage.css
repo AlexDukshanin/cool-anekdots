@@ -57,8 +57,9 @@
 .main-tag-selector {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 20px;
   align-items: center;
+  justify-content: center;
 }
 
 .tag-button,
@@ -165,7 +166,6 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-items: center;
   padding: 25px;
   background: #353535;
   border-radius: 10px;
@@ -175,6 +175,8 @@
 }
 
 .main-container-card-name {
+  display: flex;
+  justify-content: center;
   font-size: 28px;
   font-weight: bold;
   color: #ffa31a;
@@ -185,7 +187,7 @@
 }
 
 .main-container-card-text {
-  font-size: 16px;
+  font-size: 20px;
   line-height: 1.8;
   color: #f1f1f1;
   margin-bottom: 20px;
@@ -198,7 +200,7 @@
 .main-container-card-info {
   display: flex;
   gap: 15px;
-  justify-content: flex-start; /* Выравнивание элементов по левому краю */
+  justify-content: center; 
   font-size: 14px;
   color: #d1d1d1;
   margin-top: 15px;
@@ -224,6 +226,8 @@
 
 /* Стили для кнопки редактировать*/
 .main-edit-button {
+  margin: auto;
+  width: 200px;
   padding: 8px 15px;
   background-color: #ffa31a;
   color: white;
@@ -246,11 +250,13 @@
   box-shadow: 0 0 8px rgba(255, 163, 26, 0.4);
 }
 
+name
+
 /* Стили для рейтинга поста */
 .main-container-card-rating {
   font-weight: 600;
   color: #ff8800;
-  margin-top: 5px;
+
 }
 
 .main-container-card-rating::before {

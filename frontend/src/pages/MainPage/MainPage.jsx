@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import useAuthFetch from '../../hooks/token'
+import RatingPost from "./RatingPost";
 import '../../css/MainPage.css'
 import TagSelector from "./TagSelector";
 import tagOptions from "./TagOptions";
@@ -170,6 +171,19 @@ function MainPage() {
       )
     }
 
+    const TextSpace = (text) => {
+    if (!text) return null;
+    const hasLeadingDash = /^\s*-/.test(text);
+    const parts = text.split(/\s*-\s*/).map(p => p.trim()).filter(Boolean);
+
+    return parts.map((part, i) => (
+      <React.Fragment key={i}>
+        {i > 0 && <><br /> -{part}</>}
+        {i === 0 && (hasLeadingDash ? `-${part}` : part)}
+      </React.Fragment>
+    ));
+  };
+
 
   return (
     <main className="main-section">
@@ -203,7 +217,7 @@ function MainPage() {
                     <div className="main-tag-dropdawn">
                     {editingTags.length === 0 ? (
                       <div className="main-tag-buttons-NoTags">
-                        Постов на модерации нет
+                        У поста отсутсвуют теги
                       </div>
                     ) : ( allOptions.map(({ value, label}) => {
                       if (editingTags.includes(value)) {
@@ -266,7 +280,7 @@ function MainPage() {
                 </div>
               ) : (
                 <>
-                  <p className="main-container-card-text">{post.content}</p>
+                  <p className="main-container-card-text">{TextSpace(post.content)}</p>
                   {user?.is_staff && (
                     <button onClick={() => {
                       setEditingPostId(post.id);
@@ -278,6 +292,9 @@ function MainPage() {
                       Редактировать
                     </button>
                   )}
+                  <RatingPost
+                  posts={posts}
+                  setPosts={setPosts} />
                 </>
               )}
               <div className="main-container-card-info">
