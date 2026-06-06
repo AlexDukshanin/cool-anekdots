@@ -2,9 +2,12 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from django.db.models import Q
 from .models import Post
 from .serialisers import PostSerializer
 import random
+
+MODERATION_TAGS = ("on_moderated", "on_moderation")
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
@@ -22,7 +25,10 @@ class PostViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if user.is_authenticated and user.is_staff:
             return Post.objects.all()
-        return Post.objects.exclude(tags__name__iexact="on_moderated")
+        return Post.objects.exclude(
+            Q(tags__name__iexact=MODERATION_TAGS[0]) |
+            Q(tags__name__iexact=MODERATION_TAGS[1])
+        )
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -47,7 +53,10 @@ class PostViewSet(viewsets.ModelViewSet):
         if not request.user.is_authenticated or not request.user.is_staff:
             return Response({'error': 'Нет прав доступа'}, status=status.HTTP_403_FORBIDDEN)
 
-        posts = Post.objects.filter(tags__name__iexact="on_moderated")
+        posts = Post.objects.filter(
+            Q(tags__name__iexact=MODERATION_TAGS[0]) |
+            Q(tags__name__iexact=MODERATION_TAGS[1])
+        ).distinct()
         serializer = PostSerializer(posts, many=True, context={'request': request})
         return Response(serializer.data)
 
@@ -76,7 +85,10 @@ class PostViewSet(viewsets.ModelViewSet):
             return Response({'error': 'Нет прав на публикацию'}, status=403)
 
         post = self.get_object()
-        post.tags.remove(*post.tags.filter(name__iexact="on_moderated"))
+        post.tags.remove(*post.tags.filter(
+            Q(name__iexact=MODERATION_TAGS[0]) |
+            Q(name__iexact=MODERATION_TAGS[1])
+        ))
         post.save()
         serializer = PostSerializer(post, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)

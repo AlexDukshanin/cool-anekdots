@@ -37,6 +37,7 @@ function MainPage() {
       ...tagOptions.flatMap(el => el.options || []),
       { value: "on_moderated", label: "На модерации" }
     ];
+    const moderationTags = ["on_moderated", "on_moderation"]
     // переменная которая содержит теги отфильрованные переменной выше, те есть теги которые получилось найти по введенной строке
     const [ filteredTags, setFilteredTags] = useState(allOptions)
     
@@ -345,7 +346,7 @@ function MainPage() {
                       className={`main-edit-button`}>
                         Редактировать
                       </button>
-                      {post.tags?.includes("on_moderated") && (
+                      {post.tags?.some((tag) => moderationTags.includes(tag)) && (
                         <button
                           onClick={() => handlePublish(post.id)}
                           className="main-save-button"
