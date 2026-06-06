@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import axios from "axios";
 
-function RatingPost({ posts, setPosts}) {
+function RatingPost({ post, setPosts}) {
     const { isAuth } = useAuth() 
     const [ showRatings, setShowRatings] = useState(false)
     const [ loading, setLoading ] = useState(false)
@@ -10,25 +10,31 @@ function RatingPost({ posts, setPosts}) {
 
     const toggleRatings  = () => setShowRatings(!showRatings)
 
-    const ratePost = (score) => {
-        if (!posts) return;
+    const ratePost = async (score) => {
+        if (!post) return;
         setLoading(true)
-        const res = axios.post('http://127.0.0.1:8000/api/ratings/', {
-          post: posts.id,
-          score: score
-        }, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('access')}`  
-          }
-        })
-        setPosts((prev) => ({
-            ...prev,
-            average_rating: res.data.average_rating
-        }))
+        try {
+            const res = await axios.post('/api/ratings/', {
+              post: post.id,
+              score: score
+            }, {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem('access')}`
+              }
+            })
+            setPosts((prev) => prev.map((item) => (
+                item.id === post.id
+                    ? { ...item, average_rating: res.data.average_rating }
+                    : item
+            )))
 
-        alert(`Ваша оценка отправлена, какое же уебищное меню господи пофиксите меня `)
-        toggleRatings()
-        setLoading(false)
+            alert('Оценка отправлена')
+            toggleRatings()
+        } catch (error) {
+            console.error('Ошибка при оценке:', error)
+        } finally {
+            setLoading(false)
+        }
           
       };
 

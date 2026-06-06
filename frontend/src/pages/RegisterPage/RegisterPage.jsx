@@ -13,9 +13,7 @@ function RegisterPage() {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    age: "",
+    login: "",
     password: "",
     password2: "",
     avatar: null,
@@ -23,7 +21,6 @@ function RegisterPage() {
   });
 
   const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
   const [mode, setMode] = useState("form");
 
   useEffect(() => {
@@ -61,9 +58,7 @@ function RegisterPage() {
     setMode("form");
 
     const data = new FormData();
-    data.append("name", formData.name);
-    data.append("email", formData.email);
-    data.append("age", formData.age);
+    data.append("login", formData.login);
     data.append("password", formData.password);
     data.append("password2", formData.password2);
     if (formData.avatar) {
@@ -71,7 +66,7 @@ function RegisterPage() {
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/auth/register/", {
+      const response = await fetch("/api/auth/register/", {
         method: "POST",
         body: data,
       });
@@ -100,15 +95,15 @@ function RegisterPage() {
 
       await response.json();
 
-      const loginResponse = await axios.post("http://localhost:8000/api/auth/login/", {
-        email: formData.email,
+      const loginResponse = await axios.post("/api/auth/login/", {
+        login: formData.login,
         password: formData.password,
       });
 
       localStorage.setItem("access", loginResponse.data.access);
       localStorage.setItem("refresh", loginResponse.data.refresh);
+      window.dispatchEvent(new Event("auth-changed"));
 
-      setSuccess(true);
       setMode("success");
     } catch (err) {
       console.error("Ошибка:", err);

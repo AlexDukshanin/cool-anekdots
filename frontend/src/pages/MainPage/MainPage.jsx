@@ -21,9 +21,10 @@ function MainPage() {
     /* сюда данные о том сколько постов показывать на странице*/
     const [ pageSize, setPageSize] = useState(10)
     /* переменная которая хранит данные открто ли окно поиска тегов для поста или нет*/
-    const [ searchDropdown, setSearchDpowdown ] = useState(null)
+    const [ isTagSearchOpen, setTagSearchOpen ] = useState(false)
     // поле которое содержит строку, которую вводит модератор для поиска постов 
     const [ searchQuery, setSearchQuery ] = useState("")
+    const [postSearchQuery, setPostSearchQuery] = useState("")
 
     const [editingName, setEditingName] = useState("")
     const [editingPostId, setEditingPostId] = useState(null);
@@ -54,13 +55,31 @@ function MainPage() {
       });
     }
 
+    const normalizedSearch = postSearchQuery.trim().toLowerCase()
+    if (normalizedSearch) {
+      result = result.filter((post) => {
+        const searchable = [
+          post.title,
+          post.content,
+          post.author_name,
+          ...(Array.isArray(post.tags) ? post.tags : []),
+        ].join(" ").toLowerCase()
+
+        return searchable.includes(normalizedSearch)
+      })
+    }
+
     if (sortOrder === "best") {
       result = [...result].sort((a,b) => b.average_rating - a.average_rating)
     } else if ( sortOrder === "worst") {
       result = [...result].sort((a,b) => a.average_rating - b.average_rating )
     }
     return result
-    }, [posts, tag, sortOrder]);
+    }, [posts, tag, sortOrder, postSearchQuery]);
+
+    useEffect(() => {
+      setPage(1)
+    }, [tag, sortOrder, postSearchQuery, pageSize])
 
     const paginationPosts = useMemo(() => {
       const start = (page - 1) * pageSize
@@ -74,12 +93,12 @@ function MainPage() {
         let response;
 
         if (tag.includes("on_moderated")) {
-          response = await authFetch("http://127.0.0.1:8000/api/posts/on_moderated/", {
+          response = await authFetch("/api/posts/on_moderated/", {
             method: "GET",
             headers: { "Content-Type": "application/json" },
           });
         } else {
-          response = await fetch("http://127.0.0.1:8000/api/posts/", {
+          response = await fetch("/api/posts/", {
             method: "GET",
             headers: { "Content-Type": "application/json" },
           });
@@ -104,7 +123,7 @@ function MainPage() {
   useEffect(() => {
   const fetchUser = async () => {
     try {
-      const response = await authFetch("http://127.0.0.1:8000/api/auth/profile/");
+      const response = await authFetch("/api/auth/profile/");
       if (response.ok) {
         const data = await response.json();
         setUser(data);
@@ -140,7 +159,7 @@ function MainPage() {
      */
     const handleSave = async (id) => {
         try {
-        const response = await authFetch(`http://127.0.0.1:8000/api/posts/${id}/`, {
+        const response = await authFetch(`/api/posts/${id}/`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ 
@@ -154,11 +173,32 @@ function MainPage() {
             setPosts(posts.map(p => p.id === id ? updatedPost : p));
             setEditingPostId(null);
             setEditingTags([]);
+            setTagSearchOpen(false);
         }
         } catch (error) {
         console.error("Ошибка при сохранении поста", error);
         }
     };
+
+    const handlePublish = async (id) => {
+      try {
+        const response = await authFetch(`/api/posts/${id}/publish/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        });
+
+        if (response.ok) {
+          const publishedPost = await response.json();
+          if (tag.includes("on_moderated")) {
+            setPosts(posts.filter((post) => post.id !== id));
+          } else {
+            setPosts(posts.map((post) => post.id === id ? publishedPost : post));
+          }
+        }
+      } catch (error) {
+        console.error("Ошибка при публикации поста", error);
+      }
+    }
 
     const handleSearchChange = (e) => {
       const query = e.target.value
@@ -194,6 +234,14 @@ function MainPage() {
         user={user}
         sortOrder={sortOrder}
         setSortOrder={setSortOrder}/>
+        <div className="tag-input-tag-search main-post-search">
+          <input
+            type="text"
+            placeholder="Поиск по названию, тексту, автору или тегу"
+            value={postSearchQuery}
+            onChange={(e) => setPostSearchQuery(e.target.value)}
+          />
+        </div>
         <section> 
           {paginationPosts.map((post) => (
             <div className="main-section-container" key={post.id}>
@@ -246,8 +294,9 @@ function MainPage() {
                     placeholder="поиск тегов"
                     value={searchQuery}
                     onChange={handleSearchChange}
-                    onClick={() => setSearchDpowdown(true)} />
+                    onClick={() => setTagSearchOpen(true)} />
                   </div>
+                  {isTagSearchOpen && (
                     <div className="main-tag-dropdawn">
                     {filteredTags.map(({ value, label}) => {
                       if(!editingTags.includes(value)) {
@@ -264,6 +313,7 @@ function MainPage() {
                       }
                     })}
                     </div>
+                  )}
                   <div className="main-section-button-group">
                   <button 
                     onClick={() => handleSave(post.id)}
@@ -271,7 +321,10 @@ function MainPage() {
                       Сохранить
                       </button>
                   <button 
-                    onClick={() => setEditingPostId(null)}
+                    onClick={() => {
+                      setEditingPostId(null)
+                      setTagSearchOpen(false)
+                    }}
                     className="main-reject-button"
                     >
                     Отмена
@@ -282,18 +335,28 @@ function MainPage() {
                 <>
                   <p className="main-container-card-text">{TextSpace(post.content)}</p>
                   {user?.is_staff && (
-                    <button onClick={() => {
-                      setEditingPostId(post.id);
-                      setEditingName(post.title)
-                      setEditingContent(post.content);
-                      setEditingTags(post.tags || [])
-                    }}
-                    className={`main-edit-button`}>
-                      Редактировать
-                    </button>
+                    <div className="main-section-button-group">
+                      <button onClick={() => {
+                        setEditingPostId(post.id);
+                        setEditingName(post.title)
+                        setEditingContent(post.content);
+                        setEditingTags(post.tags || [])
+                      }}
+                      className={`main-edit-button`}>
+                        Редактировать
+                      </button>
+                      {post.tags?.includes("on_moderated") && (
+                        <button
+                          onClick={() => handlePublish(post.id)}
+                          className="main-save-button"
+                        >
+                          Опубликовать
+                        </button>
+                      )}
+                    </div>
                   )}
                   <RatingPost
-                  posts={posts}
+                  post={post}
                   setPosts={setPosts} />
                 </>
               )}

@@ -9,7 +9,7 @@ const AnecdotRandom = ({ isAuthenticated  }) =>{
 
 
     const fetchRandomPost = () => {
-        axios.get('http://127.0.0.1:8000/api/posts/random/')
+        axios.get('/api/posts/random/')
         .then(res => setPost(res.data))
         .catch(err => console.error('Ошибка при загрузке поста',err))
     }
@@ -18,7 +18,7 @@ const AnecdotRandom = ({ isAuthenticated  }) =>{
     const ratePost = (score) => {
         if (!post) return;
 
-        axios.post('http://127.0.0.1:8000/api/ratings/', {
+        axios.post('/api/ratings/', {
           post: post.id,
           score: score
         }, {

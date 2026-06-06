@@ -1,7 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from .models import Post
 from .serialisers import PostSerializer
 import random
@@ -9,7 +9,11 @@ import random
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [AllowAny]  # Все могут смотреть обычные посты
+
+    def get_permissions(self):
+        if self.action in ("list", "retrieve", "random"):
+            return [AllowAny()]
+        return [IsAuthenticated()]
 
     # Вывод страницы с постами
     # Если пользователь авторизован и его is_staf == true, тогда он видет все посты

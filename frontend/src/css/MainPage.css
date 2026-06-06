@@ -250,8 +250,6 @@
   box-shadow: 0 0 8px rgba(255, 163, 26, 0.4);
 }
 
-name
-
 /* Стили для рейтинга поста */
 .main-container-card-rating {
   font-weight: 600;
@@ -331,6 +329,12 @@ name
   background-color: #292929;
 }
 
+.main-post-search {
+  width: 100%;
+  max-width: 760px;
+  margin: 24px auto 10px;
+}
+
 .main-tag-dropdawn {
   margin-top: 20px;
   display: flex;
@@ -359,7 +363,9 @@ name
 .main-section-button-group {
   display: flex;
   flex-direction: row;
-  gap:20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
 }
 
 .main-save-button,
@@ -522,5 +528,4 @@ name
   background: #ff8800;
   color: white;
 }
-
 

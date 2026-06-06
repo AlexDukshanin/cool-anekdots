@@ -3,35 +3,14 @@ import React from "react";
 const RegisterForm = ({ formData, handleChange }) => (
   <>
     <div className="register-input-container">
-      <label>Имя:</label>
+      <label>Логин:</label>
       <input
         type="text"
-        name="name"
-        value={formData.name}
+        name="login"
+        value={formData.login}
         onChange={handleChange}
         className="register-input-field"
-        required
-      />
-    </div>
-    <div className="register-input-container">
-      <label>Email:</label>
-      <input
-        type="email"
-        name="email"
-        value={formData.email}
-        onChange={handleChange}
-        className="register-input-field"
-        required
-      />
-    </div>
-    <div className="register-input-container">
-      <label>Возраст:</label>
-      <input
-        type="number"
-        name="age"
-        value={formData.age}
-        onChange={handleChange}
-        className="register-input-field"
+        placeholder="Например: ded_molodoy"
         required
       />
     </div>

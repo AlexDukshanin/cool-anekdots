@@ -40,7 +40,7 @@ const PasswordChange = ({ onCancel }) => {
         setLoading(false)
 
         try {
-            const response = await AuthFetch('http://127.0.0.1:8000/api/auth/change-password/', {
+            const response = await AuthFetch('/api/auth/change-password/', {
                 method: 'POST',
                 // headers: {'content-type': 'application/json'},
                 body: JSON.stringify(passwordData)

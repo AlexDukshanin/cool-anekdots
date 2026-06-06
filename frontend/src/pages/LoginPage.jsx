@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('');
+  const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
 
@@ -17,18 +17,19 @@ const LoginPage = () => {
     setError(null);
     
     try {
-      const response = await axios.post('http://localhost:8000/api/auth/login/', {
-        email,
+      const response = await axios.post('/api/auth/login/', {
+        login,
         password
       });
       
       localStorage.setItem('access', response.data.access);
       localStorage.setItem('refresh', response.data.refresh);
+      window.dispatchEvent(new Event('auth-changed'));
 
       window.location.href = '/';
     } catch (error) {
       console.error('Ошибка входа:', error);
-      setError('Неверный email или пароль');
+      setError('Неверный логин/email или пароль');
     }
   };
 
@@ -41,10 +42,10 @@ const LoginPage = () => {
           <h3>Введите логин</h3>
           <input  
             className='login-input-field'
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
+            type="text"
+            value={login}
+            onChange={(e) => setLogin(e.target.value)}
+            placeholder="Логин или email"
             required
           />
         <h3>Введите пароль</h3>
@@ -58,9 +59,9 @@ const LoginPage = () => {
           />
           <div className='login-button-container'>
             <button className='login-button' type="submit">Войти</button>
-            <button className='login-button'><Link className='card-button-link' to='/register'>Зарегистрироваться</Link> </button>
+            <button className='login-button' type="button"><Link className='card-button-link' to='/register'>Зарегистрироваться</Link> </button>
           </div>
-          <button className='login-button password-reset-button'>Забыли пароль?</button>
+          <button className='login-button password-reset-button' type="button">Забыли пароль?</button>
         </form>
       </div>
     </main>

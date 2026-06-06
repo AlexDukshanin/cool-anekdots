@@ -9,7 +9,11 @@ export const useAuth = () => {
     };
 
     window.addEventListener('storage', listener);
-    return () => window.removeEventListener('storage', listener);
+    window.addEventListener('auth-changed', listener);
+    return () => {
+      window.removeEventListener('storage', listener);
+      window.removeEventListener('auth-changed', listener);
+    };
   }, []);
 
   return { isAuth };

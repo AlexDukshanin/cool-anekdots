@@ -15,6 +15,7 @@ const ProfilePage = () => {
     const navigate = useNavigate();
     const [isChangingPassword, setIsChangingPassword] = useState(false);
     const [avatarFile, setAvatarFile] = useState(null);
+    const hasPublicEmail = profile?.email && !profile.email.endsWith('@local.molodoyded');
     
     useEffect(() => {
         if (!isAuth) {
@@ -26,7 +27,7 @@ const ProfilePage = () => {
     useEffect(() => {
     const fetchProfile = async () => {
         try {
-        const response = await authFetch('http://127.0.0.1:8000/api/auth/profile/');
+        const response = await authFetch('/api/auth/profile/');
         if (response && response.ok) {
             const data = await response.json();
             setProfile(data);
@@ -57,7 +58,7 @@ const ProfilePage = () => {
         }
 
         try {
-            const response = await authFetch('http://127.0.0.1:8000/api/auth/profile/', {
+            const response = await authFetch('/api/auth/profile/', {
                 method: 'PUT',
                 body: formData
                 })
@@ -68,7 +69,6 @@ const ProfilePage = () => {
                     setError(null)
                     setAvatarFile(null);
                 } else {
-                    const errText = await response.text()
                     setError("Не удалось сохранить изменения")
                     setAvatarFile(null);
                 }
@@ -140,16 +140,18 @@ const ProfilePage = () => {
                             <h3>Профиль пользователя</h3>
                             <div className="profile-content">
                                 <div className="profile-info">
-                                    <p className="profile-info-field"><strong>Имя:</strong> {profile.name} </p>
-                                    <p className="profile-info-field"><strong>Email:</strong> {profile.email}</p>
-                                    <p className="profile-info-field"><strong>Дата рождения:</strong> {""} {(() => {
+                                    <p className="profile-info-field"><strong>Логин:</strong> {profile.login || profile.email} </p>
+                                    {hasPublicEmail && (
+                                        <p className="profile-info-field"><strong>Email:</strong> {profile.email}</p>
+                                    )}
+                                    <p className="profile-info-field"><strong>Дата рождения:</strong> {""} {profile.age ? (() => {
                                         const date = new Date(profile.age)
                                         return  date.toLocaleDateString("ru-Ru",{
                                             day: "numeric",
                                             month: "long",
                                             year: "numeric",
                                         });
-                                    })()}</p>
+                                    })() : "Не указана"}</p>
                                 </div>
                                 <div className="profile-avatar">
                                     <picture>

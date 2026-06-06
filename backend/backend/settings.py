@@ -1,3 +1,5 @@
+import os
+
 from corsheaders.defaults import default_headers
 from pathlib import Path
 
@@ -9,12 +11,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-zmwvc@9zyzkbecbjq%$@p!8@^c5og#2(xou0syhv2+n0u*t(nl'
+SECRET_KEY = os.getenv(
+    'DJANGO_SECRET_KEY',
+    'django-insecure-zmwvc@9zyzkbecbjq%$@p!8@^c5og#2(xou0syhv2+n0u*t(nl',
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DJANGO_DEBUG', 'False').lower() in ('1', 'true', 'yes', 'on')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.getenv(
+        'DJANGO_ALLOWED_HOSTS',
+        '77.91.65.202,molodoyded.duckdns.org,localhost,127.0.0.1',
+    ).split(',')
+    if host.strip()
+]
 
 
 # Application definition
@@ -52,6 +64,8 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
+    "http://77.91.65.202",
+    "http://molodoyded.duckdns.org",
     "http://localhost:5173",
     "http://127.0.0.1:5173",
 ]
@@ -140,9 +154,11 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 CSRF_TRUSTED_ORIGINS = [
+    "http://77.91.65.202",
+    "http://molodoyded.duckdns.org",
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    ]
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
