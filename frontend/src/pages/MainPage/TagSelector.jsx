@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useClickAway } from "react-use";
 import tagOptions from "./TagOptions";
 
 function TagSelector({ tag, setTag, user, sortOrder, setSortOrder }) {
@@ -10,9 +9,21 @@ function TagSelector({ tag, setTag, user, sortOrder, setSortOrder }) {
   /**
    * функция закрывает окно при клике вне области меню
    */
-   useClickAway(dropdownRef, () => {
-    setOpenDropdown(null);
-  });
+  useEffect(() => {
+    const handlePointerDown = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpenDropdown(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handlePointerDown);
+    document.addEventListener("touchstart", handlePointerDown);
+
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+      document.removeEventListener("touchstart", handlePointerDown);
+    };
+  }, []);
 
   /**
    * Если в массиве тегов эллемент есть то его удаляем, если нет - добавляем
@@ -58,7 +69,7 @@ function TagSelector({ tag, setTag, user, sortOrder, setSortOrder }) {
   };
 
     return(
-    <div className="main-tag-selector">
+    <div className="main-tag-selector" ref={dropdownRef}>
       <div className="main-tag-option">
         <button
         className={tag.length === 0 ? "tag-button-selected" : "tag-button"}
