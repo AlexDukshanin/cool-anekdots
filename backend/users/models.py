@@ -4,10 +4,11 @@ from django.utils import timezone
 
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self, email, password=None, name=None, **extra_fields):
+    def create_user(self, email, password=None, name=None, nickname=None, **extra_fields):
         if not email:
             raise ValueError("У пользователя должен быть email")
         email = self.normalize_email(email)
+        name = nickname or name or email.split('@')[0]
         user = self.model(email=email, name=name, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
@@ -21,7 +22,7 @@ class CustomUserManager(BaseUserManager):
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
-    name = models.CharField(max_length=200, )
+    name = models.CharField("Никнейм", max_length=200)
     age = models.DateField(null=True, blank=True)
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True, default='../static/user.png')
     created_at = models.DateTimeField(default=timezone.now)
@@ -35,9 +36,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['name']
 
     def __str__(self):
-        return self.email
+        return self.name or self.email
     
     class Meta:
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
-

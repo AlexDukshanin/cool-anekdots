@@ -5,15 +5,19 @@ from .models import CustomUser
 
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
-    list_display = ('email','name','age','created_at','is_staff')
+    list_display = ('email','nickname','created_at','is_staff')
     list_filter = ("is_staff", "is_active")
     ordering = ('email',)
     search_fields = ('email','name')
 
+    @admin.display(description='Никнейм')
+    def nickname(self, obj):
+        return obj.name
+
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Личная информация', 
-         {'fields': ('name', 'age', 'avatar')})
+        ('Профиль',
+         {'fields': ('name', 'avatar')})
          ,
         ('Права доступа', 
          {'fields': ('is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions')}
@@ -26,7 +30,7 @@ class CustomUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'name', 'age', 'avatar', 'password1', 'password2'),
+            'fields': ('email', 'name', 'avatar', 'password1', 'password2'),
         }),
     
     )

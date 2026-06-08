@@ -3,14 +3,14 @@ import React from "react";
 const RegisterForm = ({ formData, handleChange }) => (
   <>
     <div className="register-input-container">
-      <label>Логин:</label>
+      <label>Никнейм:</label>
       <input
         type="text"
         name="login"
         value={formData.login}
         onChange={handleChange}
         className="register-input-field"
-        placeholder="Например: ded_molodoy"
+        placeholder="Например: alex"
         required
       />
     </div>

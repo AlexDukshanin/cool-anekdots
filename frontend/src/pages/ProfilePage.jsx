@@ -49,9 +49,8 @@ const ProfilePage = () => {
     //сохранение изменений профиля
     const handleInputChange = async () => {
         const formData = new FormData();
-        formData.append('name', editedProfile.name)
-        formData.append('email', editedProfile.email)
-        formData.append('age', editedProfile.age)
+        formData.append('nickname', editedProfile.nickname || '')
+        formData.append('email', editedProfile.email || '')
 
         if (avatarFile) {
             formData.append('avatar', avatarFile)
@@ -93,24 +92,21 @@ const ProfilePage = () => {
                                     <input
                                         className='profile-info-field' 
                                         type="text" 
-                                        name='name' 
-                                        value={editedProfile.name}  
-                                        onChange={(e) => setEditedProfile({ ...editedProfile, name: e.target.value })
-                                        }/>
+                                        name='nickname'
+                                        value={editedProfile.nickname || ''}
+                                        placeholder="Никнейм"
+                                        onChange={(e) => setEditedProfile({ ...editedProfile, nickname: e.target.value })
+                                        }
+                                    />
                                     <input
                                         className='profile-info-field'
                                         type="text" 
                                         name='email' 
-                                        value={editedProfile.email} 
+                                        value={editedProfile.email || ''}
+                                        placeholder="Email"
                                         onChange={(e) => setEditedProfile({ ...editedProfile, email: e.target.value })
-                                        }/>
-                                    <input
-                                        className='profile-info-field' 
-                                        type="text" 
-                                        name='age' 
-                                        value={editedProfile.age} 
-                                        onChange={(e) => setEditedProfile({ ...editedProfile, age: e.target.value })
-                                        }/>
+                                        }
+                                    />
                                 </div>
                                 <div className="profile-avatar">
                                     <picture>
@@ -140,18 +136,10 @@ const ProfilePage = () => {
                             <h3>Профиль пользователя</h3>
                             <div className="profile-content">
                                 <div className="profile-info">
-                                    <p className="profile-info-field"><strong>Логин:</strong> {profile.login || profile.email} </p>
+                                    <p className="profile-info-field"><strong>Никнейм:</strong> {profile.nickname || profile.login || profile.email} </p>
                                     {hasPublicEmail && (
                                         <p className="profile-info-field"><strong>Email:</strong> {profile.email}</p>
                                     )}
-                                    <p className="profile-info-field"><strong>Дата рождения:</strong> {""} {profile.age ? (() => {
-                                        const date = new Date(profile.age)
-                                        return  date.toLocaleDateString("ru-Ru",{
-                                            day: "numeric",
-                                            month: "long",
-                                            year: "numeric",
-                                        });
-                                    })() : "Не указана"}</p>
                                 </div>
                                 <div className="profile-avatar">
                                     <picture>

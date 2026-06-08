@@ -29,7 +29,7 @@ const LoginPage = () => {
       window.location.href = '/';
     } catch (error) {
       console.error('Ошибка входа:', error);
-      setError('Неверный логин/email или пароль');
+      setError('Неверный никнейм/email или пароль');
     }
   };
 
@@ -39,13 +39,13 @@ const LoginPage = () => {
         <h2 className='login-title-enter'>Вход в систему</h2>
         {error && <div className="error-message">{error}</div>}
         <form className="login-input-container" onSubmit={handleLogin}>
-          <h3>Введите логин</h3>
+          <h3>Введите никнейм или email</h3>
           <input  
             className='login-input-field'
             type="text"
             value={login}
             onChange={(e) => setLogin(e.target.value)}
-            placeholder="Логин или email"
+            placeholder="Никнейм или email"
             required
           />
         <h3>Введите пароль</h3>

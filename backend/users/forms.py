@@ -6,7 +6,7 @@ from django.contrib.auth import password_validation
 
 class CoustunUserCreate(UserCreationForm):
     email = forms.EmailField(required=True, label="Почта пользователя")
-    name = forms.CharField(required=True, label="Имя пользователя ")
+    name = forms.CharField(required=True, label="Никнейм")
 
     class Meta:
         model = CustomUser
@@ -23,7 +23,10 @@ class CoustunUserCreate(UserCreationForm):
 class UserUpsateForm(forms.ModelForm):
     class Meta:
         model = CustomUser
-        fields = ["name", "email", "age", "avatar"]
+        fields = ["name", "email", "avatar"]
+        labels = {
+            "name": "Никнейм",
+        }
 
 class PasswordChangeForm(forms.Form):
     old_password = forms.CharField(
