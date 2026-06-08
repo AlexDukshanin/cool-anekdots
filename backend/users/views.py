@@ -1,29 +1,26 @@
-from rest_framework import viewsets, generics, status
-from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.permissions import AllowAny
-from .models import CustomUser
-from rest_framework.permissions import IsAuthenticated
-from .serializers import UsersSerializer, RegisterSerializer, loginSerializer
 from django.contrib.auth import update_session_auth_hash
-from rest_framework.generics import RetrieveUpdateAPIView
-from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework.decorators import api_view
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.password_validation import validate_password
-from django.contrib.auth import update_session_auth_hash
-from rest_framework import status
 
+from rest_framework import generics, status, viewsets
+from rest_framework.decorators import api_view
+from rest_framework.exceptions import ValidationError
+from rest_framework.generics import RetrieveUpdateAPIView
+from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
 
-
+from .audit import record_access_event, save_login_audit, save_registration_audit
+from .models import CustomUser, UserAccessLog
+from .serializers import RegisterSerializer, UsersSerializer, loginSerializer
 
 
 class UsersViewsSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = UsersSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
+
 
 class RegisterView(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
@@ -34,6 +31,13 @@ class RegisterView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
+        save_registration_audit(user, request)
+        record_access_event(
+            UserAccessLog.REGISTRATION,
+            request,
+            user=user,
+            identifier=request.data.get('login') or request.data.get('email') or '',
+        )
 
         refresh = RefreshToken.for_user(user)
         return Response({
@@ -41,15 +45,33 @@ class RegisterView(generics.CreateAPIView):
             "refresh": str(refresh),
             "access": str(refresh.access_token)
         }, status=status.HTTP_201_CREATED)
-    
+
+
 class LoginView(generics.GenericAPIView):
     serializer_class = loginSerializer
     permission_classes = [AllowAny]
 
     def post(self, request):
+        identifier = request.data.get('login') or request.data.get('email') or ''
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except ValidationError:
+            record_access_event(
+                UserAccessLog.LOGIN_FAILED,
+                request,
+                identifier=identifier,
+            )
+            raise
+
         user = serializer.validated_data
+        save_login_audit(user, request)
+        record_access_event(
+            UserAccessLog.LOGIN_SUCCESS,
+            request,
+            user=user,
+            identifier=identifier,
+        )
 
         refresh = RefreshToken.for_user(user)
         return Response({
@@ -57,7 +79,8 @@ class LoginView(generics.GenericAPIView):
             "refresh": str(refresh),
             "access": str(refresh.access_token),
         })
-    
+
+
 class UserProfileView(RetrieveUpdateAPIView):
     serializer_class = UsersSerializer
     permission_classes = [IsAuthenticated]
@@ -65,7 +88,7 @@ class UserProfileView(RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
-    
+
     @api_view(['GET'])
     def current_user(request):
         user = request.user
@@ -74,7 +97,7 @@ class UserProfileView(RetrieveUpdateAPIView):
             "is_superuser": user.is_superuser,
             "is_staff": user.is_staff,
         })
-    
+
 
 class ChangePasswordView(APIView):
     permission_classes = [IsAuthenticated]  # Требуется авторизация
@@ -103,6 +126,3 @@ class ChangePasswordView(APIView):
         update_session_auth_hash(request, user)
 
         return Response({"detail": "Пароль успешно изменён."}, status=status.HTTP_200_OK)
-    
-
-    
