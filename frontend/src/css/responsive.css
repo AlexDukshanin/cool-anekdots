@@ -29,6 +29,7 @@
     gap: 10px;
     padding: 10px 12px;
     min-height: 62px;
+    box-sizing: border-box;
   }
 
   header > div:first-child {
@@ -52,9 +53,7 @@
   }
 
   .links {
-    position: absolute;
-    top: 18px;
-    right: 12px;
+    position: static;
     align-items: center;
     gap: 0;
     padding: 0;
@@ -76,11 +75,16 @@
   }
 
   .menu-toggle-button {
-    display: inline-flex;
+    position: fixed;
+    top: 16px;
+    right: 12px;
+    display: inline-flex !important;
     align-items: center;
     justify-content: center;
     min-width: 58px;
     min-height: 34px;
+    color: #ffa31a;
+    z-index: 1100;
   }
 
   .hidden-menu {
