@@ -39,13 +39,24 @@ function Header() {
                 ) : (
                     <Link className="link" to='/login'>Войти</Link>
                 )}
-                <button onClick={showMenu} className="link button-link">Меню</button>
+                <button onClick={showMenu} className="link button-link menu-toggle-button">Меню</button>
             </div>
                 <div className={`hidden-menu ${isOpen ? 'open' : ''}`}>
                     <div className="menu-links">
+                        <Link onClick={showMenu} className="link menu-link" to="/mainPage">Главная</Link>
                         <Link onClick={showMenu} className="link menu-link" to="/">Рандомный анекдот</Link>
-                        <Link onClick={showMenu} className="link menu-link" to='/profile'> Мой профиль</Link>
-                        <Link onClick={showMenu} className="link menu-link" to='/AddPost'>Добавить анекдот</Link>
+                        {isAuth ? (
+                            <>
+                                <Link onClick={showMenu} className="link menu-link" to='/profile'>Мой профиль</Link>
+                                <Link onClick={showMenu} className="link menu-link" to='/AddPost'>Добавить анекдот</Link>
+                                <button onClick={handleLogout} className="link button-link menu-link">Выйти</button>
+                            </>
+                        ) : (
+                            <>
+                                <Link onClick={showMenu} className="link menu-link" to='/login'>Войти</Link>
+                                <Link onClick={showMenu} className="link menu-link" to='/register'>Зарегистрироваться</Link>
+                            </>
+                        )}
                         <Link onClick={showMenu} className="link menu-link">Контакты </Link>
                     </div>
                 </div>
