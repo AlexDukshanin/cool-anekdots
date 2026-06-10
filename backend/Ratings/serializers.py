@@ -6,6 +6,7 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ['id', 'title', 'content', 'average_rating']
+        ref_name = 'RatingPost'
 
 class RatingSerializer(serializers.ModelSerializer):
     class Meta:
