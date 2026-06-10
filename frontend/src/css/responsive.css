@@ -28,9 +28,15 @@
     padding: 10px 12px;
   }
 
+  header > div:first-child {
+    min-width: 0;
+    max-width: calc(100% - 120px);
+  }
+
   header h1 {
     font-size: 20px;
     line-height: 1.15;
+    overflow-wrap: anywhere;
   }
 
   header p {
@@ -49,6 +55,7 @@
     gap: 12px;
     padding: 0;
     margin-left: auto;
+    flex-shrink: 0;
   }
 
   .link,
