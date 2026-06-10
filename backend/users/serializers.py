@@ -1,6 +1,8 @@
-from rest_framework import serializers
-from .models import CustomUser
 from django.contrib.auth import authenticate
+
+from rest_framework import serializers
+
+from .models import CustomUser, UserAccessLog
 
 LOCAL_LOGIN_DOMAIN = "local.molodoyded"
 
@@ -11,6 +13,7 @@ def login_to_email(login):
 
 class UsersSerializer(serializers.ModelSerializer):
     login = serializers.SerializerMethodField()
+    avatar_url = serializers.SerializerMethodField()
     nickname = serializers.CharField(
         source='name',
         required=False,
@@ -24,9 +27,16 @@ class UsersSerializer(serializers.ModelSerializer):
             return obj.email[:-len(suffix)]
         return obj.email
 
+    def get_avatar_url(self, obj):
+        if not obj.avatar:
+            return None
+        request = self.context.get('request')
+        url = obj.avatar.url
+        return request.build_absolute_uri(url) if request else url
+
     class Meta:
         model = CustomUser
-        fields = ('id','login','email','nickname','avatar','is_staff')
+        fields = ('id','login','email','nickname','avatar','avatar_url','is_staff')
 
     def validate(self, attrs):
         nickname = attrs.get('name')
@@ -41,6 +51,7 @@ class UsersSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({'nickname': 'Такой никнейм уже занят'})
             attrs['name'] = nickname
         return attrs
+
 
 class RegisterSerializer(serializers.Serializer):
     login = serializers.RegexField(
@@ -92,6 +103,7 @@ class RegisterSerializer(serializers.Serializer):
         user = CustomUser.objects.create_user(**validated_data)
         return user
 
+
 class loginSerializer(serializers.Serializer):
     login = serializers.CharField(required=False, allow_blank=True)
     email = serializers.EmailField(required=False, allow_blank=True)
@@ -113,3 +125,64 @@ class loginSerializer(serializers.Serializer):
         if user and user.is_active:
             return user
         raise serializers.ValidationError("неверный никнейм/email или пароль")
+
+
+class UserSummarySerializer(UsersSerializer):
+    class Meta(UsersSerializer.Meta):
+        fields = ('id', 'login', 'email', 'nickname', 'avatar_url', 'is_active', 'is_staff')
+
+
+class AdminUserSerializer(UsersSerializer):
+    access_log_count = serializers.IntegerField(source='access_logs.count', read_only=True)
+    is_superuser = serializers.BooleanField(read_only=True)
+
+    class Meta(UsersSerializer.Meta):
+        fields = (
+            'id',
+            'login',
+            'email',
+            'nickname',
+            'avatar',
+            'avatar_url',
+            'is_active',
+            'is_staff',
+            'is_superuser',
+            'created_at',
+            'registration_ip',
+            'registration_user_agent',
+            'last_login_at',
+            'last_login_ip',
+            'last_login_user_agent',
+            'access_log_count',
+        )
+        read_only_fields = (
+            'id',
+            'login',
+            'avatar_url',
+            'is_staff',
+            'is_superuser',
+            'created_at',
+            'registration_ip',
+            'registration_user_agent',
+            'last_login_at',
+            'last_login_ip',
+            'last_login_user_agent',
+            'access_log_count',
+        )
+
+
+class UserAccessLogSerializer(serializers.ModelSerializer):
+    user = UserSummarySerializer(read_only=True)
+
+    class Meta:
+        model = UserAccessLog
+        fields = (
+            'id',
+            'user',
+            'event',
+            'identifier',
+            'ip_address',
+            'user_agent',
+            'path',
+            'created_at',
+        )

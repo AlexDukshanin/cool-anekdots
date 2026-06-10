@@ -1,8 +1,8 @@
-from rest_framework import serializers, generics
-from taggit.serializers import (TagListSerializerField, TaggitSerializer)
-from .models import Post
+from rest_framework import generics, serializers
+from taggit.serializers import TagListSerializerField
 from taggit.models import Tag
 
+from .models import Post
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -11,7 +11,7 @@ class TagSerializer(serializers.ModelSerializer):
         fields = ["name"]
 
 class TagListView(generics.ListAPIView):
-    queryset = Tag.objects.all()
+    queryset = Tag.objects.all().order_by('name')
     serializer_class = TagSerializer
 
 
@@ -31,7 +31,7 @@ class PostSerializer(serializers.ModelSerializer):
         tags = validated_data.pop('tags', None)
         instance = super().update(instance, validated_data)
         if tags is not None:
-            instance.tags.set(tags) 
+            instance.tags.set(tags)
         return instance
 
     def create(self, validated_data):
@@ -39,4 +39,3 @@ class PostSerializer(serializers.ModelSerializer):
         instance = super().create(validated_data)
         instance.tags.add(*tags)
         return instance
-
