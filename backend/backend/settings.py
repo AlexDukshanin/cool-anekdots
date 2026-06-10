@@ -68,6 +68,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://77.91.65.202",
     "http://molodoyded.duckdns.org",
     "https://molodoyded.duckdns.org",
+    "https://molodoyded.duckdns.org:9443",
     "http://localhost:5173",
     "http://127.0.0.1:5173",
 ]
@@ -89,6 +90,10 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'API for the Cool Anekdots web and Android clients.',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
+    'SERVERS': [
+        {'url': 'https://molodoyded.duckdns.org:9443', 'description': 'Production HTTPS'},
+        {'url': 'http://molodoyded.duckdns.org', 'description': 'Production HTTP fallback'},
+    ],
 }
 
 from datetime import timedelta
@@ -168,6 +173,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://77.91.65.202",
     "http://molodoyded.duckdns.org",
     "https://molodoyded.duckdns.org",
+    "https://molodoyded.duckdns.org:9443",
     "http://localhost:5173",
     "http://127.0.0.1:5173",
 ]
