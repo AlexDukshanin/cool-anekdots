@@ -1,4 +1,5 @@
 from rest_framework import generics, serializers
+from rest_framework.permissions import AllowAny
 from taggit.serializers import TagListSerializerField
 from taggit.models import Tag
 
@@ -13,6 +14,7 @@ class TagSerializer(serializers.ModelSerializer):
 class TagListView(generics.ListAPIView):
     queryset = Tag.objects.all().order_by('name')
     serializer_class = TagSerializer
+    permission_classes = [AllowAny]
 
 
 class PostSerializer(serializers.ModelSerializer):
