@@ -9,6 +9,7 @@ import ProfilePage from './pages/ProfilePage'
 import AddPostPage from './pages/AddPostPage';
 import MainPage from './pages/MainPage/MainPage';
 import './css/RegisterPage.css'
+import './css/responsive.css'
 
 
 
