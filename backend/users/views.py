@@ -10,10 +10,11 @@ from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
+from drf_spectacular.utils import extend_schema
 
 from .audit import record_access_event, save_login_audit, save_registration_audit
 from .models import CustomUser, UserAccessLog
-from .serializers import RegisterSerializer, UsersSerializer, loginSerializer
+from .serializers import ChangePasswordSerializer, RegisterSerializer, UsersSerializer, loginSerializer
 
 
 class UsersViewsSet(viewsets.ModelViewSet):
@@ -101,10 +102,14 @@ class UserProfileView(RetrieveUpdateAPIView):
 
 class ChangePasswordView(APIView):
     permission_classes = [IsAuthenticated]  # Требуется авторизация
+    serializer_class = ChangePasswordSerializer
 
+    @extend_schema(request=ChangePasswordSerializer)
     def post(self, request):
         user = request.user
-        data = request.data
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
 
         old_password = data.get("old_password")
         new_password = data.get("new_password")

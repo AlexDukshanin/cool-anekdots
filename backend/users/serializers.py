@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate
 
+from drf_spectacular.utils import OpenApiTypes, extend_schema_field
 from rest_framework import serializers
 
 from .models import CustomUser, UserAccessLog
@@ -21,12 +22,14 @@ class UsersSerializer(serializers.ModelSerializer):
         max_length=200,
     )
 
+    @extend_schema_field(OpenApiTypes.STR)
     def get_login(self, obj):
         suffix = f"@{LOCAL_LOGIN_DOMAIN}"
         if obj.email.endswith(suffix):
             return obj.email[:-len(suffix)]
         return obj.email
 
+    @extend_schema_field(OpenApiTypes.URI)
     def get_avatar_url(self, obj):
         if not obj.avatar:
             return None
@@ -186,3 +189,9 @@ class UserAccessLogSerializer(serializers.ModelSerializer):
             'path',
             'created_at',
         )
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True)
+    new_password2 = serializers.CharField(write_only=True)

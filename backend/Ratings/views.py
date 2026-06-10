@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
@@ -7,7 +8,9 @@ from posts.models import Post
 
 class RatingCreateAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
+    serializer_class = RatingSerializer
 
+    @extend_schema(request=RatingSerializer, responses=PostSerializer)
     def post(self, request):
         data = request.data.copy()
         data['user'] = request.user.id
@@ -26,5 +29,4 @@ class RatingCreateAPIView(APIView):
         post_serializer = PostSerializer(post)
 
         return Response(post_serializer.data, status=status.HTTP_200_OK)
-
 
